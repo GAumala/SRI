@@ -16,6 +16,7 @@
            xades4j.production.SignedDataObjects
            xades4j.production.XadesBesSigningProfile))
 
+(def KEY_USAGE_INDEX_DIGITAL_SIGNATURE 0)
 
 (defn- direct-password-provider [pwd]
   (reify
@@ -24,11 +25,16 @@
     KeyStoreKeyingDataProvider$KeyEntryPasswordProvider
     (getPassword [this alias cert] (.toCharArray pwd))))
 
-(defn- last-certificate-selector []
+(defn- has-digital-signature-key-usage [certificate]
+  (get (.getKeyUsage certificate) KEY_USAGE_INDEX_DIGITAL_SIGNATURE))
+
+(defn- digital-signature-certificate-selector []
   (reify
     KeyStoreKeyingDataProvider$SigningCertificateSelector
-    (selectCertificate [this certificates] 
-      (.get certificates (dec (.size certificates))))))
+    (selectCertificate [this entries] 
+      (->> entries
+           (filter #(has-digital-signature-key-usage (.getCertificate %)))
+           (first)))))
 
 (defn- output-doc [doc path]
   (let [factory (TransformerFactory/newInstance)
@@ -42,7 +48,7 @@
         kdp-builder (FileSystemKeyStoreKeyingDataProvider/builder
                       "pkcs12"
                       cert-path
-                      (last-certificate-selector))
+                      (digital-signature-certificate-selector))
         kdp (-> kdp-builder
                 (.storePassword password-provider)
                 (.entryPassword password-provider)
