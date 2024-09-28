@@ -7,4 +7,5 @@
   (let [factory (DocumentBuilderFactory/newInstance)
         builder (.newDocumentBuilder factory)
         is (InputSource. (StringReader. input))]
-    (try (.parse builder is) (catch Exception e nil))))
+    (try (.parse builder is)
+         (catch Exception e nil))))

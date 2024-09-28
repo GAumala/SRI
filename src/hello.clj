@@ -1,7 +1,8 @@
 (ns hello
   (:require [datil.sri-clj.api :refer [authorize-receipt]]
             [selmer.parser :refer [render-file set-resource-path!]]
-            [com.gaumala.xml :as xml-lib]))
+            [com.gaumala.xml :as xml-lib]
+            [com.gaumala.xades4j :refer [new-signer-bes sign-bes]]))
 
 (defn run [opts]
   (set-resource-path! "/home/gabriel/Projects/felec")
@@ -29,6 +30,6 @@
                          :iva "1.50"}]
                  :total "11.50"}
         xml-string (render-file "resources/factura.xml" my-data)
-        xml-doc (xml-lib/string->document xml-string)]
-    (println "doctype" (type xml-doc))
-    (println "factura\n" xml-string)))
+        xml-doc (xml-lib/string->document xml-string)
+        signer (new-signer-bes (:cert-path opts) (:pass opts))]
+    (sign-bes signer xml-doc "/home/gabriel/Projects/felec/signed.xml")))

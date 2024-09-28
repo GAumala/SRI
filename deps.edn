@@ -7,6 +7,7 @@
   org.clojure/data.json {:mvn/version "2.4.0"}
   ring-logger/ring-logger {:mvn/version "1.1.1"}
   ring/ring-json {:mvn/version "0.5.0"}
+  com.googlecode.xades4j/xades4j {:mvn/version "2.3.0"}
   seancorfield/next.jdbc {:mvn/version "1.0.462"}}
  :aliases
  {:test 
