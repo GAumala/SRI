@@ -25,7 +25,8 @@
     KeyStoreKeyingDataProvider$KeyEntryPasswordProvider
     (getPassword [this alias cert] (.toCharArray pwd))))
 
-(defn- has-digital-signature-key-usage [certificate]
+(defn- has-digital-signature-key-usage 
+  [^java.security.cert.X509Certificate certificate]
   (get (.getKeyUsage certificate) KEY_USAGE_INDEX_DIGITAL_SIGNATURE))
 
 (defn- digital-signature-certificate-selector []
@@ -60,7 +61,7 @@
                                      true))
         (.newSigner))))
 
-(defn sign-bes [signer doc out-path]
+(defn sign-bes [signer ^org.w3c.dom.Document doc out-path]
   (let [elem (.getDocumentElement doc)]
     (.sign (Enveloped. signer) elem)
     (output-doc doc out-path)))
