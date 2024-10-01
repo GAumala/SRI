@@ -24,11 +24,11 @@
 (defn transform-mensajes-seq [mensajes-elem]
   (map transform-mensaje (:content mensajes-elem)))
 
-(defn decode-validar-comprobante-res [xml-string] 
+(defn decode-validar-comprobante-res [xml-string]
   (let [envelope (xml/parse xml-string)
         respuesta (xml/find-by-tag envelope
                                    :RespuestaRecepcionComprobante)
-        reducer (fn [res-map elem] 
+        reducer (fn [res-map elem]
                   (condp = (:tag elem)
                     :estado (assoc res-map
                                    :estado
@@ -36,10 +36,9 @@
                     :comprobantes (assoc res-map
                                          :mensajes
                                          (transform-mensajes-seq
-                                           (xml/find-by-tag elem :mensajes)))
+                                          (xml/find-by-tag elem :mensajes)))
                     res-map))]
     (reduce reducer {} (:content respuesta))))
-
 
 (defn encode-validar-comprobante-req [xml-string]
   (let [base64-str (base64/encode xml-string)

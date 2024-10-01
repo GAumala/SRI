@@ -1,6 +1,6 @@
 (ns com.gaumala.xades4j
   (:import java.io.File
-           
+
            javax.xml.transform.TransformerFactory
            javax.xml.transform.dom.DOMSource
            javax.xml.transform.stream.StreamResult
@@ -25,14 +25,14 @@
     KeyStoreKeyingDataProvider$KeyEntryPasswordProvider
     (getPassword [this alias cert] (.toCharArray pwd))))
 
-(defn- has-digital-signature-key-usage 
+(defn- has-digital-signature-key-usage
   [^java.security.cert.X509Certificate certificate]
   (get (.getKeyUsage certificate) KEY_USAGE_INDEX_DIGITAL_SIGNATURE))
 
 (defn- digital-signature-certificate-selector []
   (reify
     KeyStoreKeyingDataProvider$SigningCertificateSelector
-    (selectCertificate [this entries] 
+    (selectCertificate [this entries]
       (->> entries
            (filter #(has-digital-signature-key-usage (.getCertificate %)))
            (first)))))
@@ -47,9 +47,9 @@
 (defn new-signer-bes [cert-path pwd]
   (let [password-provider (direct-password-provider pwd)
         kdp-builder (FileSystemKeyStoreKeyingDataProvider/builder
-                      "pkcs12"
-                      cert-path
-                      (digital-signature-certificate-selector))
+                     "pkcs12"
+                     cert-path
+                     (digital-signature-certificate-selector))
         kdp (-> kdp-builder
                 (.storePassword password-provider)
                 (.entryPassword password-provider)

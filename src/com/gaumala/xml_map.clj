@@ -1,9 +1,9 @@
 (ns com.gaumala.xml-map
   (:require [clojure.string :as s]
             [clojure.xml :as xml])
-    (:import java.io.InputStream
-             javax.xml.parsers.SAXParser
-             org.xml.sax.helpers.DefaultHandler))
+  (:import java.io.InputStream
+           javax.xml.parsers.SAXParser
+           org.xml.sax.helpers.DefaultHandler))
 
 ;; replace clojure.xml version with one that doesn't do illegal access
 (defn- startparse [^InputStream ins ^DefaultHandler ch]
