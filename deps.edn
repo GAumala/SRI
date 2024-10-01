@@ -1,6 +1,6 @@
-{:deps
- {co.datil/sri-clj {:mvn/version "0.1.1"}
-  selmer/selmer {:mvn/version "0.7.9"}
+{:paths ["src" "resources"]
+ :deps
+ {selmer/selmer {:mvn/version "0.7.9"}
   com.github.seancorfield/honeysql {:mvn/version "2.5.1103"}
   http-kit/http-kit {:mvn/version "2.3.0"}
   compojure/compojure {:mvn/version "1.7.0"}

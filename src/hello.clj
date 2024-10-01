@@ -1,11 +1,9 @@
 (ns hello
-  (:require [datil.sri-clj.api :refer [authorize-receipt]]
-            [selmer.parser :refer [render-file set-resource-path!]]
+  (:require [selmer.parser :refer [render-file]]
             [com.gaumala.xml :as xml-lib]
             [com.gaumala.xades4j :refer [new-signer-bes sign-bes]]))
 
 (defn run [opts]
-  (set-resource-path! "/home/gabriel/Projects/felec")
   (let [my-data {:ambiente 0 ;test
                  :razon-social "Diego Umejuarez"
                  :ruc "1704476523001"
