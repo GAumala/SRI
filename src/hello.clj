@@ -4,7 +4,7 @@
             [com.gaumala.xades4j :refer [new-signer-bes sign-bes]]))
 
 (defn run [opts]
-  (let [my-data {:ambiente 0 ;test
+  (let [my-data {:ambiente 1 ;pruebas
                  :razon-social "Diego Umejuarez"
                  :ruc "1704476523001"
                  :clave-acceso "000"
