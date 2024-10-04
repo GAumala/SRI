@@ -28,19 +28,15 @@
 
 (defn get-content [elem] (first (:content elem)))
 
-(defn encode-soap-message [body]
-  (let [elem {:tag :soap:Envelope
-              :attrs {:xmlns:soap "http://schemas.xmlsoap.org/soap/envelope/"}
-              :content [{:tag :soap:Body
-                         :attrs nil
-                         :content [body]}]}
-        emitted (with-out-str (xml/emit-element elem))]
+(defn encode-element [elem]
+  (let [emitted (with-out-str (xml/emit-element elem))]
     ; emit-element uses single quotes instead of
     ; double quotes. we have to fix that
     (s/replace emitted #"'" "\"")))
 
-(defn encode-factura [factura]
-  (let [emitted (with-out-str (xml/emit-element factura))]
-    ; emit-element uses single quotes instead of
-    ; double quotes. we have to fix that
-    (s/replace emitted #"'" "\"")))
+(defn encode-soap-message [body]
+  (encode-element {:tag :soap:Envelope
+                   :attrs {:xmlns:soap "http://schemas.xmlsoap.org/soap/envelope/"}
+                   :content [{:tag :soap:Body
+                              :attrs nil
+                              :content [body]}]}))

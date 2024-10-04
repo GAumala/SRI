@@ -1,12 +1,10 @@
-(ns com.gaumala.sri.factura
+(ns com.gaumala.sri.comprobantes
   (:require [com.gaumala.sri.clave-acceso :refer [gen-clave-acceso]]))
 
 (defn- simple-tag-hof [params]
-  (fn [tag] (if-let [content (get params tag)]
-              {:tag tag
-               :attrs {}
-               :content [(str content)]}
-              nil)))
+  (fn [tag] (if-let [content (get params tag)] {:tag tag :attrs {}
+                                                :content [(str content)]}
+                    nil)))
 
 (defn- gen-total-impuesto [params]
   (let [simple-tag (simple-tag-hof params)]
@@ -68,7 +66,7 @@
    :attrs {:nombre nombre}
    :content [(str texto)]})
 
-(defn gen-info-tributaria [params]
+(defn- gen-info-tributaria [params]
   (let [simple-tag (simple-tag-hof params)]
     {:tag :infoTributaria
      :attrs {}
@@ -84,7 +82,7 @@
                              (simple-tag :secuencial)
                              (simple-tag :dirMatriz)])}))
 
-(defn gen-info-factura [params]
+(defn- gen-info-factura [params]
   (let [simple-tag (simple-tag-hof params)
         {:keys [pagos totalConImpuestos]} params
         total-con-impuestos-tag {:tag :totalConImpuestos
