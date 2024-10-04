@@ -35,6 +35,12 @@
                          :attrs nil
                          :content [body]}]}
         emitted (with-out-str (xml/emit-element elem))]
-    ; emitted uses single quotes instead of
+    ; emit-element uses single quotes instead of
+    ; double quotes. we have to fix that
+    (s/replace emitted #"'" "\"")))
+
+(defn encode-factura [factura]
+  (let [emitted (with-out-str (xml/emit-element factura))]
+    ; emit-element uses single quotes instead of
     ; double quotes. we have to fix that
     (s/replace emitted #"'" "\"")))
