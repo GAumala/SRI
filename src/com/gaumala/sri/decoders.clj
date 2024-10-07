@@ -23,6 +23,18 @@
   (map transform-mensaje (:content mensajes-elem)))
 
 (defn respuesta-recepcion-comprobante [xml-string]
+  "decodifica la respuesta SOAP `xml-string` del web service validarComprobante
+  el resultado es un mapa con los campos del tipo
+  `RespuestaRecepcionComprobante`
+  ```clojure
+  (-> (slurp \"./respuesta_error.xml\")
+      (respuesta-recepcion-comprobante))
+  ;; => {:estado \"DEVUELTA\"
+  ;;     :mensajes [{:identificador \"35\"
+  ;;                 :mensaje \"ARCHIVO NO CUMPLE ESTRUCTURA XML\"
+  ;;                 :informacionAdicional \"No existe un contribuyente registrado con el RUC 1704476523001\"
+  ;;                 :tipo \"ERROR\"}]}
+  ```"
   (let [envelope (xml/parse xml-string)
         respuesta (xml/find-by-tag envelope
                                    :RespuestaRecepcionComprobante)

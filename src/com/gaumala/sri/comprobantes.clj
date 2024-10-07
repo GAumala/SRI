@@ -1,5 +1,6 @@
 (ns com.gaumala.sri.comprobantes
-  (:require [com.gaumala.sri.clave-acceso :refer [gen-clave-acceso]]))
+  (:require [com.gaumala.sri.clave-acceso :refer [gen-clave-acceso]]
+            [com.gaumala.xml-map :as xml]))
 
 (defn- simple-tag-hof [params]
   (fn [tag] (if-let [content (get params tag)] {:tag tag :attrs {}
@@ -137,9 +138,9 @@
                             :attrs {}
                             :content (map gen-campo-adicional
                                           infoAdicional)}]
-    {:tag :factura
-     :attrs {:id "comprobante" :version "1.0.0"}
-     :content [info-tributaria-tag
-               info-factura-tag
-               detalles-tag
-               info-adicional-tag]}))
+    (xml/map->element {:tag :factura
+                       :attrs {:id "comprobante" :version "1.0.0"}
+                       :content [info-tributaria-tag
+                                 info-factura-tag
+                                 detalles-tag
+                                 info-adicional-tag]})))

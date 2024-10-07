@@ -1,9 +1,10 @@
 (ns com.gaumala.sri.decoders-test
   (:require [clojure.test :refer [deftest is]]
+            [com.gaumala.resources :refer [load-xml]]
             [com.gaumala.sri.decoders :as decoders]))
 
 (deftest should-decode-error-respuesta-recepcion-comprobante
-  (let [xml-string (slurp "./test/res/respuesta-recepcion-comprobante.error.xml")
+  (let [xml-string (load-xml "./test/res/respuesta-recepcion-comprobante.error.xml")
         actual (decoders/respuesta-recepcion-comprobante xml-string)
         expected {:estado "DEVUELTA",
                   :mensajes [{:identificador "35"

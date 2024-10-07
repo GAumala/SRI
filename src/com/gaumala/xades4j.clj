@@ -61,7 +61,6 @@
                                      true))
         (.newSigner))))
 
-(defn sign-bes [signer ^org.w3c.dom.Document doc out-path]
+(defn sign-bes [signer ^org.w3c.dom.Document doc]
   (let [elem (.getDocumentElement doc)]
-    (.sign (Enveloped. signer) elem)
-    (output-doc doc out-path)))
+    (.sign (Enveloped. signer) elem)))

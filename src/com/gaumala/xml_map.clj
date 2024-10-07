@@ -1,17 +1,10 @@
 (ns com.gaumala.xml-map
-  (:require [clojure.string :as s]
-            [clojure.xml :as xml])
+  (:require [clojure.data.xml :as xml])
   (:import java.io.InputStream
            javax.xml.parsers.SAXParser
            org.xml.sax.helpers.DefaultHandler))
 
-;; replace clojure.xml version with one that doesn't do illegal access
-(defn- startparse [^InputStream ins ^DefaultHandler ch]
-  (let [^SAXParser p (xml/disable-external-entities (xml/sax-parser))]
-    (.parse p ins ch)))
-
-(defn parse [^java.lang.String input] (xml/parse (java.io.ByteArrayInputStream. (.getBytes input))
-                                                 startparse))
+(defn parse [input] (xml/parse-str input))
 
 (defn find-by-tag [elem tag]
   (cond
@@ -28,15 +21,10 @@
 
 (defn get-content [elem] (first (:content elem)))
 
-(defn encode-element [elem]
-  (let [emitted (with-out-str (xml/emit-element elem))]
-    ; emit-element uses single quotes instead of
-    ; double quotes. we have to fix that
-    (s/replace emitted #"'" "\"")))
+(defn map->element [elem]
+  (if (string? elem) elem
+      (xml/element (:tag elem)
+                   (:attrs elem)
+                   (map map->element (:content elem)))))
 
-(defn encode-soap-message [body]
-  (encode-element {:tag :soap:Envelope
-                   :attrs {:xmlns:soap "http://schemas.xmlsoap.org/soap/envelope/"}
-                   :content [{:tag :soap:Body
-                              :attrs nil
-                              :content [body]}]}))
+(defn emit [elem] (xml/emit-str elem))

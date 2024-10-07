@@ -16,7 +16,7 @@
         builder (.newDocumentBuilder factory)
         is (InputSource. (StringReader. input))]
     (try (.parse builder is)
-         (catch Exception e nil))))
+         (catch Exception e (.printStacktrace e)))))
 
 (defn document->string [^org.w3c.dom.Document input]
   (let [sw (StringWriter.)

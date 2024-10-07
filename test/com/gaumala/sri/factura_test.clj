@@ -1,10 +1,10 @@
 (ns com.gaumala.sri.factura-test
   (:require [clojure.test :refer [deftest is]]
-            [com.gaumala.sri.encoders :as encoders]
-            [com.gaumala.xml-map :as xml]))
+            [com.gaumala.resources :refer [load-xml]]
+            [com.gaumala.sri.encoders :as encoders]))
 
 (deftest should-generate-and-encode-example-factura
-  (let [expected (slurp "./test/res/example-factura.xml")
+  (let [expected (load-xml "./test/res/example-factura.xml")
         actual (encoders/factura
                 {:infoTributaria {:ambiente "1"
                                   :razonSocial "Distribuidora de Suministros Nacional S.A."
@@ -48,7 +48,6 @@
                                         :unidadTiempo "dias"}]
                                :valorRetIva "10620.00"
                                :valorRetRenta "2950.00"}
-
                  :detalles [{:codigoPrincipal "125BJC-01"
                              :codigoAuxiliar "1234D56789-A"
                              :descripcion "CAMIONETA 4X4 DIESEL 3.7"
@@ -86,7 +85,7 @@
     (is (= expected actual))))
 
 (deftest should-generate-and-encode-example-factura-with-nil-codigo
-  (let [expected (slurp "./test/res/example-factura.xml")
+  (let [expected (load-xml "./test/res/example-factura.xml")
         actual (encoders/factura
                 {:infoTributaria {:ambiente "1"
                                   :razonSocial "Distribuidora de Suministros Nacional S.A."
