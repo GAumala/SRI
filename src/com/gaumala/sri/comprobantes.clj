@@ -1,4 +1,6 @@
 (ns com.gaumala.sri.comprobantes
+  "Funciones para construir mapas con datos de comprobantes
+  eletrónicos para posteriormente codificarlos a XML"
   (:require [com.gaumala.sri.clave-acceso :refer [gen-clave-acceso]]
             [com.gaumala.xml :as xml]))
 

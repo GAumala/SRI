@@ -1,4 +1,6 @@
 (ns com.gaumala.sri.clave-acceso
+  "Funciones para construir la clave de acceso de 48 dígitos de las
+  facturas electrónicas."
   (:require [clojure.string :as s]))
 
 (defn compute-mod-11-verificador [input]
@@ -20,6 +22,7 @@
 (defn gen-clave-acceso
   "Genera la clave de acceso a partir de un mapa con datos de una
   factura. El mapa tiene los siguentes campos:
+
   | key               | Descripción |
   | ------------------|-------------|
   | `:ambiente`       | Código del tipo de ambiente (`factura.infoTributaria.ambiente`)
@@ -29,15 +32,16 @@
   | `:secuencial`     | Número secuencial de la factura (`factura.infoTributaria.secuencial`)
   | `:estab`          | Código del establecimiento (`factura.infoTributaria.estab`)
   | `:ptoEmi`         | Código del punto de emisión (`factura.infoTributaria.ptoEmi`)
-  | `:codigoNumerico` | Código númerico de 8 digitos. No es parte de la factura.
-  " [{:keys [fechaEmision
-             ambiente
-             ruc
-             codDoc
-             secuencial
-             estab
-             ptoEmi
-             codigoNumerico]}]
+  | `:codigoNumerico` | Código númerico de 8 digitos. No es parte de la factura."
+  {:doc/format :markdown}
+  [{:keys [fechaEmision
+           ambiente
+           ruc
+           codDoc
+           secuencial
+           estab
+           ptoEmi
+           codigoNumerico]}]
   (let [tipo-emision "1" ;solo hay tipo 1 para autorizacion offline
         fecha-digits (s/replace fechaEmision #"/" "")
         serie (str estab ptoEmi)

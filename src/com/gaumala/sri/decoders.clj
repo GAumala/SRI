@@ -1,4 +1,6 @@
 (ns com.gaumala.sri.decoders
+  "Funciones para decodificar las respuestas XML de los web services
+  del SRI."
   (:require [com.gaumala.xml :as xml]))
 
 (defn- transform-mensaje [mensaje-elem]
@@ -49,7 +51,7 @@
 (defn- transform-autorizaciones-seq [autorizaciones-elem]
   (map transform-autorizacion (:content autorizaciones-elem)))
 
-(defn respuesta-recepcion-comprobante [xml-string]
+(defn respuesta-recepcion-comprobante
   "decodifica la respuesta SOAP `xml-string` del web service validarComprobante
   el resultado es un mapa con los campos del tipo
   `RespuestaRecepcionComprobante`
@@ -62,6 +64,8 @@
   ;;                 :informacionAdicional \"No existe un contribuyente registrado con el RUC 1704476523001\"
   ;;                 :tipo \"ERROR\"}]}
   ```"
+  {:doc/format :markdown}
+  [xml-string]
   (let [envelope (xml/parse xml-string)
         respuesta (xml/find-by-tag envelope
                                    :RespuestaRecepcionComprobante)
@@ -77,24 +81,26 @@
                     res-map))]
     (reduce reducer {} (:content respuesta))))
 
-(defn respuesta-autorizacion-comprobante [xml-string]
+(defn respuesta-autorizacion-comprobante
   "decodifica la respuesta SOAP `xml-string` del web service autorizacionComprobante
   el resultado es un mapa con los campos del tipo
   `RespuestaAutorizacionComprobante`
   ```clojure
   (-> (slurp \"./respuesta_error.xml\")
-      (respuesta-recepcion-comprobante))
+      (respuesta-autorizacion-comprobante))
   ;; => {:claveAccesoConsultada \"0710202401179214673900110020010000000011234567810\"
   ;;     :numeroComprobantes \"1\"
   ;;     :autorizaciones [{:estado \"NO AUTORIZADO\"
   ;;                       :fechaAutorizacion \"2024-10-07T13:48:46-05:00\"
   ;;                       :ambiente \"PRUEBAS\"
-  ;;                       :comprobante \"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\"
+  ;;                       :comprobante \"<?xml version=\"1.0\" encoding=\"UTF-8\"...\"
   ;;                       :mensajes [{:identificador \"56\"
   ;;                                   :mensaje \"ERROR ESTABLECIMIENTO CERRADO\"
   ;;                                   :informacionAdicional \"El establecimiento 002 está cerrado\"
   ;;                                   :tipo \"ERROR\"}]}]}
   ```"
+  {:doc/format :markdown}
+  [xml-string]
   (let [envelope (xml/parse xml-string)
         respuesta (xml/find-by-tag envelope
                                    :RespuestaAutorizacionComprobante)
