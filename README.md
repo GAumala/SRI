@@ -135,3 +135,5 @@ Consultar estado de autorización:
 ;;                                    :mensaje "ESTE PROCESO FUE REALIZADO EN EL AMBIENTE DE PRUEBAS"
 ;;                                    :tipo "ADVERTENCIA"}]}]}
 ```
+
+Para más información revisa [la documentación](https://gaumala.github.io/SRI/)

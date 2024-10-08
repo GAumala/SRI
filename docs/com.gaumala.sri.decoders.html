@@ -15,7 +15,7 @@ del SRI.</pre></div><div class="public anchor" id="var-respuesta-autorizacion-co
 ;;                                   :informacionAdicional "El establecimiento 002 está cerrado"
 ;;                                   :tipo "ERROR"}]}]}
 </code></pre>
-</div></div></div><div class="public anchor" id="var-respuesta-recepcion-comprobante"><h3>respuesta-recepcion-comprobante</h3><div class="usage"><code>(respuesta-recepcion-comprobante xml-string)</code></div><div class="doc"><div class="markdown"><p>decodifica la respuesta SOAP <code>xml-string</code> del web service validarComprobante el resultado es un mapa con los campos del tipo <code>RespuestaRecepcionComprobante</code></p>
+</div></div><div class="src-link"><a href="https://github.com/GAumala/SRI/blob/main/src/com/gaumala/sri/decoders.clj#L84">view source</a></div></div><div class="public anchor" id="var-respuesta-recepcion-comprobante"><h3>respuesta-recepcion-comprobante</h3><div class="usage"><code>(respuesta-recepcion-comprobante xml-string)</code></div><div class="doc"><div class="markdown"><p>decodifica la respuesta SOAP <code>xml-string</code> del web service validarComprobante el resultado es un mapa con los campos del tipo <code>RespuestaRecepcionComprobante</code></p>
 <pre><code class="language-clojure">(-&gt; (slurp "./respuesta_error.xml")
     (respuesta-recepcion-comprobante))
 ;; =&gt; {:estado "DEVUELTA"
@@ -24,4 +24,4 @@ del SRI.</pre></div><div class="public anchor" id="var-respuesta-autorizacion-co
 ;;                 :informacionAdicional "No existe un contribuyente registrado con el RUC 1704476523001"
 ;;                 :tipo "ERROR"}]}
 </code></pre>
-</div></div></div></div></body></html>
+</div></div><div class="src-link"><a href="https://github.com/GAumala/SRI/blob/main/src/com/gaumala/sri/decoders.clj#L54">view source</a></div></div></div></body></html>

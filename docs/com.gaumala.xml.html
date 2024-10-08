@@ -8,17 +8,17 @@
 ;; =&gt; &lt;?xml version='1.0' encoding='UTF-8'?&gt;
 ;;    &lt;greeting lang="EN"&gt;hello&lt;/greeting&gt;
 </code></pre>
-</div></div></div><div class="public anchor" id="var-find-by-tag"><h3>find-by-tag</h3><div class="usage"><code>(find-by-tag elem tag)</code></div><div class="doc"><div class="markdown"><p>Busca en el contenido de <code>elem</code> un elemento con tag <code>tag</code>. Si no lo encuentra devuelve <code>nil</code>.</p>
+</div></div><div class="src-link"><a href="https://github.com/GAumala/SRI/blob/main/src/com/gaumala/xml.clj#L62">view source</a></div></div><div class="public anchor" id="var-find-by-tag"><h3>find-by-tag</h3><div class="usage"><code>(find-by-tag elem tag)</code></div><div class="doc"><div class="markdown"><p>Busca en el contenido de <code>elem</code> un elemento con tag <code>tag</code>. Si no lo encuentra devuelve <code>nil</code>.</p>
 <pre><code class="language-clojure">(find-by-tag {:tag :date :content [{:tag :day :content ["01"]}
                                    {:tag :month :content ["Jan"]}
                                    {:tag :year :content ["2024"]}]}
              :month)
 ;; =&gt; {:tag :month :content ["Jan"]}
 </code></pre>
-</div></div></div><div class="public anchor" id="var-get-content"><h3>get-content</h3><div class="usage"><code>(get-content elem)</code></div><div class="doc"><div class="markdown"><p>Devuelve el primer elemento del contenido de <code>elem</code>. Esta diseñada para elementos que solo contienen texto.</p>
+</div></div><div class="src-link"><a href="https://github.com/GAumala/SRI/blob/main/src/com/gaumala/xml.clj#L16">view source</a></div></div><div class="public anchor" id="var-get-content"><h3>get-content</h3><div class="usage"><code>(get-content elem)</code></div><div class="doc"><div class="markdown"><p>Devuelve el primer elemento del contenido de <code>elem</code>. Esta diseñada para elementos que solo contienen texto.</p>
 <pre><code class="language-clojure">(get-content {:tag :description :content ["My description"]})
 ;; =&gt; "My description"
 </code></pre>
-</div></div></div><div class="public anchor" id="var-map-.3Eelement"><h3>map-&gt;element</h3><div class="usage"><code>(map-&gt;element elem)</code></div><div class="doc"><div class="markdown"><p>Convierte un mapa con keys :tag, :attrs y :content a un record element de la librería <a href="https://github.com/clojure/data.xml">data.xml</a>. Los items de :content también son convertidos recursivamente.</p>
-</div></div></div><div class="public anchor" id="var-parse"><h3>parse</h3><div class="usage"><code>(parse input)</code></div><div class="doc"><div class="markdown"><p>Convierte un string XML a un record element de la libreria <a href="https://github.com/clojure/data.xml">data.xml</a></p>
-</div></div></div></div></body></html>
+</div></div><div class="src-link"><a href="https://github.com/GAumala/SRI/blob/main/src/com/gaumala/xml.clj#L40">view source</a></div></div><div class="public anchor" id="var-map-.3Eelement"><h3>map-&gt;element</h3><div class="usage"><code>(map-&gt;element elem)</code></div><div class="doc"><div class="markdown"><p>Convierte un mapa con keys :tag, :attrs y :content a un record element de la librería <a href="https://github.com/clojure/data.xml">data.xml</a>. Los items de :content también son convertidos recursivamente.</p>
+</div></div><div class="src-link"><a href="https://github.com/GAumala/SRI/blob/main/src/com/gaumala/xml.clj#L50">view source</a></div></div><div class="public anchor" id="var-parse"><h3>parse</h3><div class="usage"><code>(parse input)</code></div><div class="doc"><div class="markdown"><p>Convierte un string XML a un record element de la libreria <a href="https://github.com/clojure/data.xml">data.xml</a></p>
+</div></div><div class="src-link"><a href="https://github.com/GAumala/SRI/blob/main/src/com/gaumala/xml.clj#L10">view source</a></div></div></div></body></html>
