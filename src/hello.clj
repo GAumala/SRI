@@ -13,7 +13,7 @@
                                    :ptoEmi "001"
                                    :nombreComercial "Empresa Importadora y Exportadora de Piezas"
                                    :ruc "1792146739001"}
-                  :infoFactura {:fechaEmision "21/10/2012"
+                  :infoFactura {:fechaEmision "07/10/2024"
                                 :dirEstablecimiento "Sebastián Moreno S/N Francisco García"
                                 :contribuyenteEspecial "5368"
                                 :obligadoContabilidad "SI"
@@ -80,15 +80,13 @@
                                    :texto "15.42x"}]})
 
 (def RECEPCION_URL "https://celcer.sri.gob.ec/comprobantes-electronicos-ws/RecepcionComprobantesOffline?wsdl")
+(def AUTORIZACION_URL "https://celcer.sri.gob.ec/comprobantes-electronicos-ws/AutorizacionComprobantesOffline?wsdl")
 
 (defn post [url params]
-  (println "req" url params)
   (let [res (client/post url params)]
-    (println "res " res)
     res))
 
 (defn enviar-comprobante [factura certificate]
-  (println "factura " (encoders/factura factura "12345678"))
   (let [req-body (-> factura
                      (encoders/factura "12345678")
                      (sign-xml certificate)
@@ -97,3 +95,11 @@
         (client/post {:body req-body})
         (:body)
         (decoders/respuesta-recepcion-comprobante))))
+
+(defn consultar-comprobante [clave-acceso]
+  (let [req-body (encoders/autorizacion-comprobante clave-acceso)]
+    (-> AUTORIZACION_URL
+        (client/post {:body req-body})
+        (:body)
+        (decoders/respuesta-autorizacion-comprobante))))
+

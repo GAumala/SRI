@@ -5,14 +5,27 @@
             [com.gaumala.xml-map :as xml]))
 
 (defn validar-comprobante [xml-string]
-  "Codifica el `xml-string` de un comprobante en otro string xml como
-  un mensaje SOAP para enviar al web service validarComprobante del SRI"
+  "codifica el `xml-string` de un comprobante en otro string xml como
+  un mensaje soap para enviar al web service validarComprobante del sri"
   (let [base64-str (base64/encode xml-string)
         body {:tag :validarComprobante
               :attrs {:xmlns "http://ec.gob.sri.ws.recepcion"}
               :content [{:tag :xml
                          :attrs {:xmlns ""}
                          :content [base64-str]}]}]
+    (-> body
+        (xml/map->element)
+        (soap/message-with-body)
+        (xml/emit))))
+
+(defn autorizacion-comprobante [clave-acceso]
+  "codifica la `clave-acceso` de un comprobante en otro string xml como
+  un mensaje soap para enviar al web service autorizacionComprobante del sri"
+  (let [body {:tag :autorizacionComprobante
+              :attrs {:xmlns "http://ec.gob.sri.ws.autorizacion"}
+              :content [{:tag :claveAccesoComprobante
+                         :attrs {:xmlns ""}
+                         :content [clave-acceso]}]}]
     (-> body
         (xml/map->element)
         (soap/message-with-body)

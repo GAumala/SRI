@@ -1,0 +1,27 @@
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <soap:Body>
+    <ns2:autorizacionComprobanteResponse xmlns:ns2="http://ec.gob.sri.ws.autorizacion">
+      <RespuestaAutorizacionComprobante>
+        <claveAccesoConsultada>0710202401179214673900110020010000000011234567810</claveAccesoConsultada>
+        <numeroComprobantes>1</numeroComprobantes>
+        <autorizaciones>
+          <autorizacion>
+            <estado>NO AUTORIZADO</estado>
+            <fechaAutorizacion>2024-10-07T13:48:46-05:00</fechaAutorizacion>
+            <ambiente>PRUEBAS</ambiente>
+            <comprobante>&lt;?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?&gt;
+            </comprobante>
+            <mensajes>
+              <mensaje>
+                <identificador>56</identificador>
+                <mensaje>ERROR ESTABLECIMIENTO CERRADO</mensaje>
+                <informacionAdicional>El establecimiento 002 está cerrado</informacionAdicional>
+                <tipo>ERROR</tipo>
+              </mensaje>
+            </mensajes>
+          </autorizacion>
+        </autorizaciones>
+      </RespuestaAutorizacionComprobante>
+    </ns2:autorizacionComprobanteResponse>
+  </soap:Body>
+</soap:Envelope>

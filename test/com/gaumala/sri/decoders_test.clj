@@ -16,3 +16,19 @@
                               :informacionAdicional "Se encontró el siguiente error en la estructura del comprobante: 0 no corresponde a ningun tipo de ambiente."
                               :tipo "ERROR"}]}]
     (is (= expected actual))))
+
+(deftest should-decode-error-respuesta-autorizacion-comprobante
+  (let [xml-string (load-xml "./test/res/respuesta-autorizacion-comprobante.error.xml")
+        actual (decoders/respuesta-autorizacion-comprobante xml-string)
+        expected {:claveAccesoConsultada "0710202401179214673900110020010000000011234567810",
+                  :numeroComprobantes "1"
+                  :autorizaciones [{:estado "NO AUTORIZADO"
+                                    :fechaAutorizacion "2024-10-07T13:48:46-05:00"
+                                    :ambiente "PRUEBAS"
+                                    :comprobante "<?xml version=\\\"1.0\\\" encoding=\\\"UTF-8\\\" standalone=\\\"no\\\"?>"
+
+                                    :mensajes [{:identificador "56"
+                                                :mensaje "ERROR ESTABLECIMIENTO CERRADO"
+                                                :informacionAdicional "El establecimiento 002 está cerrado"
+                                                :tipo "ERROR"}]}]}]
+    (is (= expected actual))))
