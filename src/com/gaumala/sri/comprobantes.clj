@@ -1,6 +1,6 @@
 (ns com.gaumala.sri.comprobantes
   (:require [com.gaumala.sri.clave-acceso :refer [gen-clave-acceso]]
-            [com.gaumala.xml-map :as xml]))
+            [com.gaumala.xml :as xml]))
 
 (defn- simple-tag-hof [params]
   (fn [tag] (if-let [content (get params tag)] {:tag tag :attrs {}

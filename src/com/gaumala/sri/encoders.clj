@@ -2,7 +2,7 @@
   (:require [com.gaumala.sri.comprobantes :refer [gen-factura]]
             [com.gaumala.soap :as soap]
             [com.gaumala.utils.base64 :as base64]
-            [com.gaumala.xml-map :as xml]))
+            [com.gaumala.xml :as xml]))
 
 (defn validar-comprobante [xml-string]
   "codifica el `xml-string` de un comprobante en otro string xml como

@@ -1,5 +1,5 @@
 (ns com.gaumala.sri.decoders
-  (:require [com.gaumala.xml-map :as xml]))
+  (:require [com.gaumala.xml :as xml]))
 
 (defn- transform-mensaje [mensaje-elem]
   (let [reducer (fn [res-map elem]
@@ -85,7 +85,7 @@
   (-> (slurp \"./respuesta_error.xml\")
       (respuesta-recepcion-comprobante))
   ;; => {:claveAccesoConsultada \"0710202401179214673900110020010000000011234567810\"
-  ;;     :numeroComprobantes " 1 "
+  ;;     :numeroComprobantes \"1\"
   ;;     :autorizaciones [{:estado \"NO AUTORIZADO\"
   ;;                       :fechaAutorizacion \"2024-10-07T13:48:46-05:00\"
   ;;                       :ambiente \"PRUEBAS\"

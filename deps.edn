@@ -1,7 +1,6 @@
 {:deps
  {com.googlecode.xades4j/xades4j {:mvn/version "2.3.0"}
-  org.clojure/data.xml {:mvn/version "0.0.8"}
-  clj-http/clj-http {:mvn/version "3.13.0"}}
+  org.clojure/data.xml {:mvn/version "0.0.8"}}
  :aliases
  {:test 
   {:main-opts ["-m" "kaocha.runner"]

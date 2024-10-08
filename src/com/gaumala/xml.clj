@@ -1,4 +1,4 @@
-(ns com.gaumala.xml-map
+(ns com.gaumala.xml
   (:require [clojure.data.xml :as xml])
   (:import java.io.InputStream
            javax.xml.parsers.SAXParser
