@@ -1,6 +1,9 @@
 (ns com.gaumala.xades4j
   (:import java.io.File
 
+           java.security.KeyStore
+           java.security.cert.X509Certificate
+
            javax.xml.transform.TransformerFactory
            javax.xml.transform.dom.DOMSource
            javax.xml.transform.stream.StreamResult
@@ -8,6 +11,7 @@
            xades4j.providers.impl.KeyStoreKeyingDataProvider$KeyStorePasswordProvider
            xades4j.providers.impl.KeyStoreKeyingDataProvider$KeyEntryPasswordProvider
            xades4j.providers.impl.KeyStoreKeyingDataProvider$SigningCertificateSelector
+           xades4j.providers.impl.DirectKeyingDataProvider
            xades4j.providers.impl.FileSystemKeyStoreKeyingDataProvider
            xades4j.algorithms.EnvelopedSignatureTransform
            xades4j.production.BasicSignatureOptions
@@ -18,43 +22,33 @@
 
 (def KEY_USAGE_INDEX_DIGITAL_SIGNATURE 0)
 
-(defn- direct-password-provider [pwd]
-  (reify
-    KeyStoreKeyingDataProvider$KeyStorePasswordProvider
-    (getPassword [this] (.toCharArray pwd))
-    KeyStoreKeyingDataProvider$KeyEntryPasswordProvider
-    (getPassword [this alias cert] (.toCharArray pwd))))
-
 (defn- has-digital-signature-key-usage
-  [^java.security.cert.X509Certificate certificate]
+  [^X509Certificate certificate]
   (get (.getKeyUsage certificate) KEY_USAGE_INDEX_DIGITAL_SIGNATURE))
 
-(defn- digital-signature-certificate-selector []
-  (reify
-    KeyStoreKeyingDataProvider$SigningCertificateSelector
-    (selectCertificate [this entries]
-      (->> entries
-           (filter #(has-digital-signature-key-usage (.getCertificate %)))
-           (first)))))
+(defn- load-keystore [stream pwd]
+  (let [keystore (KeyStore/getInstance "PKCS12")]
+    (.load keystore stream (char-array pwd))
+    keystore))
 
-(defn- output-doc [doc path]
-  (let [factory (TransformerFactory/newInstance)
-        transformer (.newTransformer factory)
-        source (DOMSource. doc)
-        result (StreamResult. (File. path))]
-    (.transform transformer source result)))
+(defn- find-digital-signature-alias [keystore]
+  (let [aliases (enumeration-seq (.aliases keystore))
+        digital-signature-filter
+        (fn [a] (let [certificate (.getCertificate keystore a)]
+                  (if (instance? X509Certificate certificate)
+                    (has-digital-signature-key-usage certificate)
+                    false)))]
+    (first (filter digital-signature-filter aliases))))
 
-(defn new-signer-bes [cert-path pwd]
-  (let [password-provider (direct-password-provider pwd)
-        kdp-builder (FileSystemKeyStoreKeyingDataProvider/builder
-                     "pkcs12"
-                     cert-path
-                     (digital-signature-certificate-selector))
-        kdp (-> kdp-builder
-                (.storePassword password-provider)
-                (.entryPassword password-provider)
-                (.fullChain true)
-                (.build))]
+(defn- new-keying-data-provider [keystore pwd]
+  (let [target-alias (find-digital-signature-alias keystore)
+        certificate (.getCertificate keystore target-alias)
+        private-key (.getKey keystore target-alias (char-array pwd))]
+    (DirectKeyingDataProvider. certificate private-key)))
+
+(defn new-signer-bes [stream pwd]
+  (let [keystore (load-keystore stream pwd)
+        kdp (new-keying-data-provider keystore pwd)]
     (-> (XadesBesSigningProfile. kdp)
         (.withBasicSignatureOptions (.includePublicKey
                                      (BasicSignatureOptions.)

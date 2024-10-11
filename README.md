@@ -7,11 +7,12 @@ Librería Clojure para generar, firmar, y codifcar comprobantes electrónicos de
 Generar factura electrónica firmada:
 
 ```clojure
+(require '[clojure.io :as io)
 (require '[com.gaumala.sri.xades-bes :refer [sign-xml]])
 (require '[com.gaumala.sri.encoders :as encoders]))
 
-(let [certificate {:path "path/to/my_cert.p12"
-                   :pass "mypassword123"}
+(let [keystore {:stream (io/input-stream "path/to/my_keystore.p12")
+                :pass "mypassword123"}
       factura-map {:infoTributaria {:ambiente "1"
                                     :razonSocial "Distribuidora de Suministros Nacional S.A."
                                     :claveAcceso "2110201101179214673900110020010000000011234567813"
@@ -88,7 +89,7 @@ Generar factura electrónica firmada:
                                     :texto "4580"}
                                    {:nombre "Impuesto ISD"
                                     :texto "15.42x"}]}
-      signed (sign-xml (encoders/factura factura-map) certificate)]
+      signed (sign-xml (encoders/factura factura-map) keystore)]
   (spit "mi_factura.xml" signed))
 ```
 

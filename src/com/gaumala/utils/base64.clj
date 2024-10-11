@@ -1,8 +1,21 @@
 (ns com.gaumala.utils.base64
   (:import java.util.Base64))
 
-(defn encode [to-encode]
-  (.encodeToString (Base64/getEncoder) (.getBytes to-encode)))
+(defmulti encode
+  "Multimethod para codificar valores a Base64.
+  Solo String y byte array son soportados. Devuelve un String en Base64.
+  ```clojure
+  (encode \"hello world!\")
+  ; => \"aGVsbG8gd29ybGQh\"
+  (encode (.getBytes \"hello world!\"))
+  ; => \"aGVsbG8gd29ybGQh\"
+  ```" {:doc/format :markdown} class)
 
-(defn decode [to-decode]
-  (String. (.decode (Base64/getDecoder) to-decode)))
+(defmethod encode java.lang.String [input]
+  (.encodeToString (Base64/getEncoder) (.getBytes input)))
+(defmethod encode (Class/forName "[B") [input]
+  (.encodeToString (Base64/getEncoder) input))
+
+(defn decode
+  "Decodifica un String en Base64. Devuelve un byte array."
+  [input] (.decode (Base64/getDecoder) input))
