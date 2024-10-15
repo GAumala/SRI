@@ -104,7 +104,7 @@
            :else true) false)))
 
 (defn tarifa?
-  "Predicado para el campo `tarifa`
+  "Predicado para el campo `tarifa`.
   Acepta números o strings numéricos con 4 caracteres o menos"
   {:doc/format :markdown}
   [x]
