@@ -1,6 +1,6 @@
 (ns com.gaumala.resources
-  (:require [clojure.string :refer [replace]]))
+  (:require [clojure.string :as str]))
 
 (defn load-xml [path]
   (-> (slurp path)
-      (replace #"\n[ \t]*" "")))
+      (str/replace #"\n[ \t]*" "")))

@@ -4,6 +4,7 @@
   (:require [com.gaumala.sri.comprobantes :refer [gen-factura]]
             [com.gaumala.soap :as soap]
             [com.gaumala.utils.base64 :as base64]
+            [com.gaumala.utils.spec :refer [validate]]
             [com.gaumala.xml :as xml]))
 
 (defn validar-comprobante
@@ -64,6 +65,8 @@
   ;;      <factura id=\"comprobante\" version=\"1.0.0\">...
   ```"
   {:doc/format :markdown}
-  ([params codigo] (->> (gen-factura params codigo)
-                        (xml/emit)))
+  ([params codigo]
+   {:pre [(validate :sri.comprobantes/factura params)]}
+   (->> (gen-factura params codigo)
+        (xml/emit)))
   ([params] (factura params nil)))
