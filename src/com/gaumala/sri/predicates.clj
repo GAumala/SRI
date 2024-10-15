@@ -87,10 +87,11 @@
                          (doall (map #(Integer/parseInt %) (str/split x #"/")))
                          (catch Exception e nil)))
 
-(defn fechaEmision? [x]
+(defn fechaEmision?
   "Predicado para el campo `fechaEmision`.
   Acepta strings con fechas en formato dd/mm/yyyy"
   {:doc/format :markdown}
+  [x]
   (and (string? x)
        (= 10 (count x))
        (if-let [[dd mm yyyy] (parse-fecha x)]
@@ -105,6 +106,7 @@
 (defn tarifa?
   "Predicado para el campo `tarifa`
   Acepta números o strings numéricos con 4 caracteres o menos"
+  {:doc/format :markdown}
   [x]
   (let [text (str x)] (and (>= 4 (count text))
                            (re-matches monetary-value-regex text))))
