@@ -9,7 +9,7 @@
 
 (defn validar-comprobante
   "codifica el `xml-string` de un comprobante en otro string XML como
-  un mensaje soap para enviar al web service `validarComprobante` del SRI"
+  un mensaje soap para enviar al web service `validarComprobante` del SRI."
   {:doc/format :markdown}
   [xml-string]
   (let [base64-str (base64/encode xml-string)
@@ -25,7 +25,7 @@
 
 (defn autorizacion-comprobante
   "codifica la `clave-acceso` de un comprobante en otro string xml como
-  un mensaje soap para enviar al web service `autorizacionComprobante` del SRI"
+  un mensaje soap para enviar al web service `autorizacionComprobante` del SRI."
   {:doc/format :markdown}
   [clave-acceso]
   (let [body {:tag :autorizacionComprobante
@@ -63,7 +63,10 @@
            \"123456789\")
   ;; => <?xml version='1.0' encoding='UTF-8'?>
   ;;      <factura id=\"comprobante\" version=\"1.0.0\">...
-  ```"
+  ```
+  
+  El mapa `params` debe conformarse al spec `:sri.comprobantes/factura`,
+  de lo contrario se arroja un `ExceptionInfo` a través de [[validate]]."
   {:doc/format :markdown}
   ([params codigo]
    {:pre [(validate :sri.comprobantes/factura params)]}

@@ -11,5 +11,6 @@
 <tr><td> <code>:pass</code>   </td><td> Contraseña del certificado</td></tr>
 </tbody>
 </table>
-<p>El resultado de  esta función es un string con el XML firmado.</p>
-</div></div><div class="src-link"><a href="https://github.com/GAumala/SRI/blob/main/src/com/gaumala/sri/xades_bes.clj#L8">view source</a></div></div></div></body></html>
+<p>El resultado de esta función es un string con el XML firmado.</p>
+<p>Esta función puede arrojar un <code>ExceptionInfo</code> si hay algún problema con el keystore o la contraseña que impida firmar correctamente. En ese caso <code>(:type (ex-data e))</code> contiene <code>:xml-signature</code>.</p>
+</div></div><div class="src-link"><a href="https://github.com/GAumala/SRI/blob/main/src/com/gaumala/sri/xades_bes.clj#L20">view source</a></div></div></div></body></html>

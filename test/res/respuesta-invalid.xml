@@ -1,0 +1,9 @@
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <soap:Body>
+    <ns2:OtherResponse xmlns:ns2="http://ec.gob.sri.ws.autorizacion">
+      <RespuestaInvalida>
+        <foo><bar /><baz /></foo>
+      </RespuestaInvalida>
+    </ns2:OtherResponse>
+  </soap:Body>
+</soap:Envelope>
