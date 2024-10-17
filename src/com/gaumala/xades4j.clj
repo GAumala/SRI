@@ -46,6 +46,12 @@
         private-key (.getKey keystore target-alias (char-array pwd))]
     (DirectKeyingDataProvider. certificate private-key)))
 
+(defn- require-element-by-id [^org.w3c.dom.Document doc elem-id]
+  (or (.getElementById doc elem-id)
+      (throw (ex-info (str "Element not found. id: " elem-id)
+                      {:type :xml-signature
+                       :elem-id elem-id}))))
+
 (defn new-signer-bes [stream pwd]
   (let [keystore (load-keystore stream pwd)
         kdp (new-keying-data-provider keystore pwd)]
@@ -55,6 +61,11 @@
                                      true))
         (.newSigner))))
 
-(defn sign-bes [signer ^org.w3c.dom.Document doc]
-  (let [elem (.getDocumentElement doc)]
-    (.sign (Enveloped. signer) elem)))
+(defn sign-bes
+  ([signer ^org.w3c.dom.Document doc]
+   (sign-bes signer doc nil))
+  ([signer ^org.w3c.dom.Document doc elem-id]
+   (let [elem (if (string? elem-id)
+                (require-element-by-id doc elem-id)
+                (.getDocumentElement doc))]
+     (.sign (Enveloped. signer) elem))))

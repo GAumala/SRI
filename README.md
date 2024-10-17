@@ -8,7 +8,7 @@ Generar factura electrónica firmada:
 
 ```clojure
 (require '[clojure.io :as io)
-(require '[com.gaumala.sri.xades-bes :refer [sign-xml]])
+(require '[com.gaumala.sri.xades-bes :refer [sign-comprobante]])
 (require '[com.gaumala.sri.encoders :as encoders]))
 
 (let [keystore {:stream (io/input-stream "path/to/my_keystore.p12")
@@ -89,7 +89,8 @@ Generar factura electrónica firmada:
                                     :texto "4580"}
                                    {:nombre "Impuesto ISD"
                                     :texto "15.42x"}]}
-      signed (sign-xml (encoders/factura factura-map) keystore)]
+      signed (-> (encoders/factura factura-map)
+                 (sign-comprobante keystore))]
   (spit "mi_factura.xml" signed))
 ```
 

@@ -13,12 +13,12 @@
 
 (defn- sign-bes [signer xml-doc]
   (try
-    (xades4j/sign-bes signer xml-doc)
+    (xades4j/sign-bes signer xml-doc "comprobante")
     (catch Exception e
       (throw (ex-info (ex-message e) {:type :xml-signature} e)))))
 
-(defn sign-xml
-  "Firma un documento `xml-string` con un keystore especificado en el
+(defn sign-comprobante
+  "Firma un comprobante `xml-string` con un keystore especificado en el
   mapa `store` de la siguiente forma:
 
   | key       | Descripción |
