@@ -130,7 +130,7 @@
   (s/keys :req-un [:sri.comprobantes.detAdicional/nombre
                    :sri.comprobantes.detAdicional/valor]))
 (s/def :sri.comprobantes/detallesAdicionales
-  (s/* :sri.comprobantes/detAdicional))
+  (s/+ :sri.comprobantes/detAdicional))
 
 (s/def :sri.comprobantes.detalle/impuesto
   (s/keys :req-un [:sri.comprobantes.impuesto/codigo
@@ -157,7 +157,7 @@
 (s/def :sri.comprobantes/campoAdicional
   (s/keys :req-un [:sri.comprobantes.campoAdicional/nombre
                    :sri.comprobantes.campoAdicional/texto]))
-(s/def :sri.comprobantes/infoAdicional (s/* :sri.comprobantes/campoAdicional))
+(s/def :sri.comprobantes/infoAdicional (s/+ :sri.comprobantes/campoAdicional))
 
 (s/def :sri.comprobantes/factura
   (s/keys :req-un [:sri.comprobantes/infoTributaria
@@ -169,6 +169,11 @@
   (fn [tag] (if-let [content (get params tag)] {:tag tag :attrs {}
                                                 :content [(str content)]}
                     nil)))
+
+(defn- sequence-tag [tag content]
+  (if (empty? content) nil {:tag tag
+                            :attrs {}
+                            :content content}))
 
 (defn- gen-total-impuesto [params]
   (let [simple-tag (simple-tag-hof params)]
@@ -199,20 +204,21 @@
                              (simple-tag :plazo)
                              (simple-tag :unidadTiempo)])}))
 
+(defn- gen-det-adicional [attrs]
+  {:tag :detAdicional
+   :attrs (select-keys attrs
+                       [:nombre
+                        :valor])})
+
 (defn- gen-detalle [params]
   (let [simple-tag (simple-tag-hof params)
         {:keys [detallesAdicionales impuestos]} params
-        adicionales-tag {:tag :detallesAdicionales
-                         :attrs {}
-                         :content (map (fn [attrs]
-                                         {:tag :detAdicional
-                                          :attrs (select-keys attrs
-                                                              [:nombre
-                                                               :valor])})
-                                       detallesAdicionales)}
-        impuestos-tag {:tag :impuestos
-                       :attrs {}
-                       :content (map gen-impuesto impuestos)}]
+        detalles-adicionales-tag (->> detallesAdicionales
+                                      (map gen-det-adicional)
+                                      (sequence-tag :detallesAdicionales))
+        impuestos-tag (->> impuestos
+                           (map gen-impuesto)
+                           (sequence-tag :impuestos))]
     {:tag :detalle
      :attrs {}
      :content (filter some? [(simple-tag :codigoPrincipal)
@@ -222,7 +228,7 @@
                              (simple-tag :precioUnitario)
                              (simple-tag :descuento)
                              (simple-tag :precioTotalSinImpuesto)
-                             adicionales-tag
+                             detalles-adicionales-tag
                              impuestos-tag])}))
 
 (defn- gen-campo-adicional [{:keys [nombre texto]}]
@@ -294,16 +300,16 @@
                                                  codigo)
         info-tributaria-tag (gen-info-tributaria infoTributaria)
         info-factura-tag (gen-info-factura infoFactura)
-        detalles-tag {:tag :detalles
-                      :attrs {}
-                      :content (map gen-detalle detalles)}
-        info-adicional-tag {:tag :infoAdicional
-                            :attrs {}
-                            :content (map gen-campo-adicional
-                                          infoAdicional)}]
-    (xml/map->element {:tag :factura
-                       :attrs {:id "comprobante" :version "1.0.0"}
-                       :content [info-tributaria-tag
-                                 info-factura-tag
-                                 detalles-tag
-                                 info-adicional-tag]})))
+        detalles-tag (->> detalles
+                          (map gen-detalle)
+                          (sequence-tag :detalles))
+        info-adicional-tag (->> infoAdicional
+                                (map gen-campo-adicional)
+                                (sequence-tag :infoAdicional))]
+    (xml/map->element
+     {:tag :factura
+      :attrs {:id "comprobante" :version "1.0.0"}
+      :content (filter some? [info-tributaria-tag
+                              info-factura-tag
+                              detalles-tag
+                              info-adicional-tag])})))
