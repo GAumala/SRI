@@ -213,12 +213,12 @@
 (defn- gen-detalle [params]
   (let [simple-tag (simple-tag-hof params)
         {:keys [detallesAdicionales impuestos]} params
-        detalles-adicionales-tag (->> detallesAdicionales
-                                      (map gen-det-adicional)
-                                      (sequence-tag :detallesAdicionales))
-        impuestos-tag (->> impuestos
-                           (map gen-impuesto)
-                           (sequence-tag :impuestos))]
+        detalles-adicionales-tag (some->> detallesAdicionales
+                                          (map gen-det-adicional)
+                                          (sequence-tag :detallesAdicionales))
+        impuestos-tag (some->> impuestos
+                               (map gen-impuesto)
+                               (sequence-tag :impuestos))]
     {:tag :detalle
      :attrs {}
      :content (filter some? [(simple-tag :codigoPrincipal)
@@ -300,12 +300,12 @@
                                                  codigo)
         info-tributaria-tag (gen-info-tributaria infoTributaria)
         info-factura-tag (gen-info-factura infoFactura)
-        detalles-tag (->> detalles
-                          (map gen-detalle)
-                          (sequence-tag :detalles))
-        info-adicional-tag (->> infoAdicional
-                                (map gen-campo-adicional)
-                                (sequence-tag :infoAdicional))]
+        detalles-tag (some->> detalles
+                              (map gen-detalle)
+                              (sequence-tag :detalles))
+        info-adicional-tag (some->> infoAdicional
+                                    (map gen-campo-adicional)
+                                    (sequence-tag :infoAdicional))]
     (xml/map->element
      {:tag :factura
       :attrs {:id "comprobante" :version "1.0.0"}

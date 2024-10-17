@@ -165,3 +165,45 @@
                                  {:nombre "Impuesto ISD"
                                   :texto "15.42x"}]})]
     (is (= expected actual))))
+
+(deftest should-generate-factura-without-infoAdicional-or-detallesAdicionales
+  (let [expected (load-xml "./test/res/factura-without-adicionales.xml")
+        actual (encoders/factura
+                {:infoTributaria {:ambiente 1,
+                                  :razonSocial "Jose Olmedo",
+                                  :ruc "0957616386001"
+                                  :codDoc "01"
+                                  :estab "001"
+                                  :ptoEmi "001"
+                                  :secuencial "000000003"
+                                  :dirMatriz "Guayaquil"}
+                 :infoFactura {:pagos [{:formaPago "01"
+                                        :total 230
+                                        :plazo 30
+                                        ,:unidadTiempo "dias"}]
+                               :direccionComprador "salinas y santiago"
+                               :identificacionComprador "1713328506001"
+                               :totalConImpuestos [{:codigo 2
+                                                    :codigoPorcentaje 4
+                                                    :baseImponible 200
+                                                    :valor 30}]
+                               :razonSocialComprador "PRUEBAS SERVICIO DE RENTAS INTERNAS"
+                               :totalDescuento 0
+                               :tipoIdentificacionComprador "04"
+                               :importeTotal "230"
+                               :totalSinImpuestos 200
+                               :fechaEmision "17/10/2024"
+                               :moneda "DOLAR"
+                               :propina 0}
+                 :detalles [{:codigoPrincipal "001"
+                             :descripcion "Servicios informaticos"
+                             :cantidad 1
+                             :precioUnitario 200
+                             :descuento 0
+                             :precioTotalSinImpuesto 200
+                             :impuestos [{:codigo 2
+                                          :codigoPorcentaje 4
+                                          :baseImponible 200
+                                          :valor 30
+                                          :tarifa 15}]}]})]
+    (is (= expected actual))))
