@@ -16,7 +16,6 @@
            xades4j.algorithms.EnvelopedSignatureTransform
            xades4j.production.BasicSignatureOptions
            xades4j.production.DataObjectReference
-           xades4j.production.Enveloped
            xades4j.production.SignedDataObjects
            xades4j.production.XadesBesSigningProfile))
 
@@ -46,12 +45,6 @@
         private-key (.getKey keystore target-alias (char-array pwd))]
     (DirectKeyingDataProvider. certificate private-key)))
 
-(defn- require-element-by-id [^org.w3c.dom.Document doc elem-id]
-  (or (.getElementById doc elem-id)
-      (throw (ex-info (str "Element not found. id: " elem-id)
-                      {:type :xml-signature
-                       :elem-id elem-id}))))
-
 (defn new-signer-bes [stream pwd]
   (let [keystore (load-keystore stream pwd)
         kdp (new-keying-data-provider keystore pwd)]
@@ -62,10 +55,12 @@
         (.newSigner))))
 
 (defn sign-bes
-  ([signer ^org.w3c.dom.Document doc]
-   (sign-bes signer doc nil))
-  ([signer ^org.w3c.dom.Document doc elem-id]
-   (let [elem (if (string? elem-id)
-                (require-element-by-id doc elem-id)
-                (.getDocumentElement doc))]
-     (.sign (Enveloped. signer) elem))))
+  [signer ^org.w3c.dom.Document doc]
+  (let [elem (.getDocumentElement doc)
+        data-obj-ref (-> (DataObjectReference. "#comprobante")
+                         (.withTransform (EnvelopedSignatureTransform.)))
+        data-objs (->> [data-obj-ref]
+                       (into-array DataObjectReference)
+                       (SignedDataObjects.))]
+    (.setIdAttribute elem "id" true)
+    (.sign signer data-objs elem)))
