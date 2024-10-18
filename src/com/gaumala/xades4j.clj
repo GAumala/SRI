@@ -45,13 +45,16 @@
         private-key (.getKey keystore target-alias (char-array pwd))]
     (DirectKeyingDataProvider. certificate private-key)))
 
+(defn basic-signature-options []
+  (-> (BasicSignatureOptions.)
+      (.includePublicKey true)
+      (.signKeyInfo true)))
+
 (defn new-signer-bes [stream pwd]
   (let [keystore (load-keystore stream pwd)
         kdp (new-keying-data-provider keystore pwd)]
     (-> (XadesBesSigningProfile. kdp)
-        (.withBasicSignatureOptions (.includePublicKey
-                                     (BasicSignatureOptions.)
-                                     true))
+        (.withBasicSignatureOptions (basic-signature-options))
         (.newSigner))))
 
 (defn sign-bes
