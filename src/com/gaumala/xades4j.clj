@@ -16,6 +16,7 @@
            xades4j.algorithms.EnvelopedSignatureTransform
            xades4j.production.BasicSignatureOptions
            xades4j.production.DataObjectReference
+           xades4j.production.SignatureAlgorithms
            xades4j.production.SignedDataObjects
            xades4j.production.XadesBesSigningProfile))
 
@@ -45,16 +46,26 @@
         private-key (.getKey keystore target-alias (char-array pwd))]
     (DirectKeyingDataProvider. certificate private-key)))
 
-(defn basic-signature-options []
+(defn- basic-signature-options []
   (-> (BasicSignatureOptions.)
       (.includePublicKey true)
       (.signKeyInfo true)))
+
+(def ALGO_SIG_RSA_SHA_1 "http://www.w3.org/2000/09/xmldsig#rsa-sha1")
+(def ALGO_DIGEST_SHA_1 "http://www.w3.org/2000/09/xmldsig#sha1")
+
+(defn- signature-algorithms []
+  (-> (SignatureAlgorithms.)
+      (.withSignatureAlgorithm "RSA" ALGO_SIG_RSA_SHA_1)
+      (.withDigestAlgorithmForDataObjectReferences ALGO_DIGEST_SHA_1)
+      (.withDigestAlgorithmForReferenceProperties ALGO_DIGEST_SHA_1)))
 
 (defn new-signer-bes [stream pwd]
   (let [keystore (load-keystore stream pwd)
         kdp (new-keying-data-provider keystore pwd)]
     (-> (XadesBesSigningProfile. kdp)
         (.withBasicSignatureOptions (basic-signature-options))
+        (.withSignatureAlgorithms (signature-algorithms))
         (.newSigner))))
 
 (defn sign-bes
