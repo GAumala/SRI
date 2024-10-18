@@ -13,7 +13,7 @@
 
 (defn- sign-bes [signer xml-doc]
   (try
-    (xades4j/sign-bes signer xml-doc "comprobante")
+    (xades4j/sign-bes signer xml-doc)
     (catch Exception e
       (throw (ex-info (ex-message e) {:type :xml-signature} e)))))
 
