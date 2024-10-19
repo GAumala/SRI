@@ -73,7 +73,7 @@
   (-> (DataObjectReference. "#comprobante")
       (.withTransform (EnvelopedSignatureTransform.))
       (.withDataObjectFormat (.withDescription
-                              (DataObjectFormatProperty.)
+                              (DataObjectFormatProperty. "text/xml")
                               "contenido comprobante"))))
 
 (defn sign-bes
