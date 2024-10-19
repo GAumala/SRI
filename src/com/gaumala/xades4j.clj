@@ -8,6 +8,7 @@
            javax.xml.transform.dom.DOMSource
            javax.xml.transform.stream.StreamResult
 
+           xades4j.properties.DataObjectFormatProperty
            xades4j.providers.impl.KeyStoreKeyingDataProvider$KeyStorePasswordProvider
            xades4j.providers.impl.KeyStoreKeyingDataProvider$KeyEntryPasswordProvider
            xades4j.providers.impl.KeyStoreKeyingDataProvider$SigningCertificateSelector
@@ -68,12 +69,17 @@
         (.withSignatureAlgorithms (signature-algorithms))
         (.newSigner))))
 
+(defn- comprobante-reference []
+  (-> (DataObjectReference. "#comprobante")
+      (.withTransform (EnvelopedSignatureTransform.))
+      (.withDataObjectFormat (.withDescription
+                              (DataObjectFormatProperty.)
+                              "contenido comprobante"))))
+
 (defn sign-bes
   [signer ^org.w3c.dom.Document doc]
   (let [elem (.getDocumentElement doc)
-        data-obj-ref (-> (DataObjectReference. "#comprobante")
-                         (.withTransform (EnvelopedSignatureTransform.)))
-        data-objs (->> [data-obj-ref]
+        data-objs (->> [(comprobante-reference)]
                        (into-array DataObjectReference)
                        (SignedDataObjects.))]
     (.setIdAttribute elem "id" true)
