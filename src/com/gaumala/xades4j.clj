@@ -19,6 +19,7 @@
            xades4j.production.DataObjectReference
            xades4j.production.SignatureAlgorithms
            xades4j.production.SignedDataObjects
+           xades4j.production.SigningCertificateMode
            xades4j.production.XadesBesSigningProfile))
 
 (def KEY_USAGE_INDEX_DIGITAL_SIGNATURE 0)
@@ -50,6 +51,7 @@
 (defn- basic-signature-options []
   (-> (BasicSignatureOptions.)
       (.includePublicKey true)
+      (.includeSigningCertificate SigningCertificateMode/FULL_CHAIN)
       (.signKeyInfo true)))
 
 (def ALGO_SIG_RSA_SHA_1 "http://www.w3.org/2000/09/xmldsig#rsa-sha1")
