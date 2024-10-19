@@ -29,6 +29,13 @@
     (.transform transformer (DOMSource. input) (StreamResult. sw))
     (.toString sw)))
 
+(defn document->raw-string [^org.w3c.dom.Document input]
+  (let [sw (StringWriter.)
+        tf (TransformerFactory/newInstance)
+        transformer (.newTransformer tf)]
+    (.transform transformer (DOMSource. input) (StreamResult. sw))
+    (.toString sw)))
+
 (defn node->string [^org.w3c.dom.Node input]
   (let [sw (StringWriter.)
         tf (TransformerFactory/newInstance)

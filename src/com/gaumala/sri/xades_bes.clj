@@ -2,7 +2,8 @@
   "Funciones para firmar facturas electrónicas usando la
   librería [xades4j](https://github.com/luisgoncalves/xades4j)"
   {:doc/format :markdown}
-  (:require [com.gaumala.xml-doc :refer [string->document document->string]])
+  (:require [com.gaumala.xml-doc :refer [string->document
+                                         document->raw-string]])
   (:require [com.gaumala.xades4j :as xades4j]))
 
 (defn- new-signer-bes [stream pass]
@@ -35,4 +36,4 @@
   (let [signer (new-signer-bes (:stream store) (:pass store))
         xml-doc (string->document xml-string)]
     (sign-bes signer xml-doc)
-    (document->string xml-doc)))
+    (document->raw-string xml-doc)))
