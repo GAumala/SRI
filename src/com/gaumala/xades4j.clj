@@ -4,16 +4,18 @@
            java.security.KeyStore
            java.security.cert.X509Certificate
 
+           java.util.Arrays
+           java.util.List
+
            javax.xml.transform.TransformerFactory
            javax.xml.transform.dom.DOMSource
            javax.xml.transform.stream.StreamResult
 
            xades4j.properties.DataObjectFormatProperty
+           xades4j.providers.KeyingDataProvider
            xades4j.providers.impl.KeyStoreKeyingDataProvider$KeyStorePasswordProvider
            xades4j.providers.impl.KeyStoreKeyingDataProvider$KeyEntryPasswordProvider
            xades4j.providers.impl.KeyStoreKeyingDataProvider$SigningCertificateSelector
-           xades4j.providers.impl.DirectKeyingDataProvider
-           xades4j.providers.impl.FileSystemKeyStoreKeyingDataProvider
            xades4j.algorithms.EnvelopedSignatureTransform
            xades4j.production.BasicSignatureOptions
            xades4j.production.DataObjectReference
@@ -42,16 +44,25 @@
                     false)))]
     (first (filter digital-signature-filter aliases))))
 
+(defn- get-certificate-chain [keystore target-alias full-chain]
+  (if full-chain (-> keystore
+                     (.getCertificateChain target-alias)
+                     Arrays/asList)
+      (-> keystore
+          (.getCertificate target-alias)
+          List/of)))
+
 (defn- new-keying-data-provider [keystore pwd]
   (let [target-alias (find-digital-signature-alias keystore)
-        certificate (.getCertificate keystore target-alias)
+        cert-chain (get-certificate-chain keystore target-alias false)
         private-key (.getKey keystore target-alias (char-array pwd))]
-    (DirectKeyingDataProvider. certificate private-key)))
+    (reify KeyingDataProvider
+      (getSigningCertificateChain [this] cert-chain)
+      (getSigningKey [this signing-cert] private-key))))
 
 (defn- basic-signature-options []
   (-> (BasicSignatureOptions.)
       (.includePublicKey true)
-      (.includeSigningCertificate SigningCertificateMode/FULL_CHAIN)
       (.signKeyInfo true)))
 
 (def ALGO_SIG_RSA_SHA_1 "http://www.w3.org/2000/09/xmldsig#rsa-sha1")
