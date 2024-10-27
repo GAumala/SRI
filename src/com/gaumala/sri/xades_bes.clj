@@ -4,7 +4,7 @@
   {:doc/format :markdown}
   (:require [com.gaumala.xml-doc :refer [string->document
                                          document->raw-string]])
-  (:require [com.gaumala.xades4j :as xades4j]))
+  (:require [com.gaumala.sri.xades4j :as xades4j]))
 
 (defn- new-signer-bes [stream pass]
   (try

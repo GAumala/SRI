@@ -1,4 +1,4 @@
-(ns com.gaumala.xades4j
+(ns ^:no-doc com.gaumala.sri.xades4j
   (:import java.io.File
 
            java.security.KeyStore
