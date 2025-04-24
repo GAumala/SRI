@@ -58,6 +58,7 @@
 (s/def :sri.comprobantes/tipoIdentificacionComprador code-2-digits?)
 (s/def :sri.comprobantes/identificacionComprador identificacionComprador?)
 (s/def :sri.comprobantes/razonSocialComprador some-string-under-300?)
+(s/def :sri.comprobantes/direccionComprador some-string-under-300?)
 (s/def :sri.comprobantes/guiaRemision guiaRemision?)
 (s/def :sri.comprobantes/totalSinImpuestos monetary-value?)
 (s/def :sri.comprobantes/totalDescuento monetary-value?)
