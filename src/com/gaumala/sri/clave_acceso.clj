@@ -28,7 +28,6 @@
   | `:ambiente`       | Código del tipo de ambiente (`factura.infoTributaria.ambiente`)
   | `:ruc`            | RUC del contribuyente (`factura.infoTributaria.ruc`)
   | `:codDoc`         | Código del tipo de comprobante (`factura.infoTributaria.tipoDoc`)
-  | `:codDoc`         | Código del tipo de comprobante (`factura.infoTributaria.tipoDoc`)
   | `:secuencial`     | Número secuencial de la factura (`factura.infoTributaria.secuencial`)
   | `:estab`          | Código del establecimiento (`factura.infoTributaria.estab`)
   | `:ptoEmi`         | Código del punto de emisión (`factura.infoTributaria.ptoEmi`)
