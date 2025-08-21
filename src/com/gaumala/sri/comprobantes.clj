@@ -24,7 +24,8 @@
                                                 identificacionComprador?
                                                 contribuyenteEspecial?
                                                 guiaRemision?
-                                                tarifa?]]))
+                                                tarifa?]]
+            [com.gaumala.utils.spec :refer [validate]]))
 
 (s/def :sri.comprobantes/ruc code-13-digits?)
 (s/def :sri.comprobantes/ambiente int-single-digit?)
@@ -37,6 +38,7 @@
 (s/def :sri.comprobantes/secuencial code-9-digits?)
 (s/def :sri.comprobantes/estab code-3-digits?)
 (s/def :sri.comprobantes/ptoEmi code-3-digits?)
+(s/def :sri.comprobantes/contribuyenteRimpe some-string?)
 
 (s/def :sri.comprobantes/infoTributaria
   (s/keys :req-un [:sri.comprobantes/ambiente
@@ -48,6 +50,7 @@
                    :sri.comprobantes/secuencial
                    :sri.comprobantes/dirMatriz]
           :opt-un [:sri.comprobantes/nombreComercial
+                   :sri.comprobantes/contribuyenteRimpe
                    :sri.comprobantes/claveAcceso
                    :sri.comprobantes/tipoEmision]))
 
@@ -131,7 +134,7 @@
   (s/keys :req-un [:sri.comprobantes.detAdicional/nombre
                    :sri.comprobantes.detAdicional/valor]))
 (s/def :sri.comprobantes/detallesAdicionales
-  (s/+ :sri.comprobantes/detAdicional))
+  (s/nilable (s/+ :sri.comprobantes/detAdicional)))
 
 (s/def :sri.comprobantes.detalle/impuesto
   (s/keys :req-un [:sri.comprobantes.impuesto/codigo
@@ -158,7 +161,8 @@
 (s/def :sri.comprobantes/campoAdicional
   (s/keys :req-un [:sri.comprobantes.campoAdicional/nombre
                    :sri.comprobantes.campoAdicional/texto]))
-(s/def :sri.comprobantes/infoAdicional (s/+ :sri.comprobantes/campoAdicional))
+(s/def :sri.comprobantes/infoAdicional
+  (s/nilable (s/+ :sri.comprobantes/campoAdicional)))
 
 (s/def :sri.comprobantes/factura
   (s/keys :req-un [:sri.comprobantes/infoTributaria
@@ -214,7 +218,7 @@
 (defn- gen-detalle [params]
   (let [simple-tag (simple-tag-hof params)
         {:keys [detallesAdicionales impuestos]} params
-        detalles-adicionales-tag (some->> detallesAdicionales
+        detalles-adicionales-tag (some->> (not-empty detallesAdicionales)
                                           (map gen-det-adicional)
                                           (sequence-tag :detallesAdicionales))
         impuestos-tag (some->> impuestos
@@ -251,7 +255,8 @@
                              (simple-tag :estab)
                              (simple-tag :ptoEmi)
                              (simple-tag :secuencial)
-                             (simple-tag :dirMatriz)])}))
+                             (simple-tag :dirMatriz)
+                             (simple-tag :contribuyenteRimpe)])}))
 
 (defn- gen-info-factura [params]
   (let [simple-tag (simple-tag-hof params)
@@ -295,6 +300,7 @@
            :claveAcceso claveAcceso})))
 
 (defn gen-factura [params codigo]
+  {:pre [(validate :sri.comprobantes/factura params)]}
   (let [{:keys [infoFactura detalles infoAdicional]} params
         infoTributaria (complete-info-tributaria (:infoTributaria params)
                                                  (:fechaEmision infoFactura)
@@ -304,7 +310,7 @@
         detalles-tag (some->> detalles
                               (map gen-detalle)
                               (sequence-tag :detalles))
-        info-adicional-tag (some->> infoAdicional
+        info-adicional-tag (some->> (not-empty infoAdicional)
                                     (map gen-campo-adicional)
                                     (sequence-tag :infoAdicional))]
     (xml/map->element
