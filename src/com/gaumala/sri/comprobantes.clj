@@ -134,7 +134,7 @@
   (s/keys :req-un [:sri.comprobantes.detAdicional/nombre
                    :sri.comprobantes.detAdicional/valor]))
 (s/def :sri.comprobantes/detallesAdicionales
-  (s/nilable (s/+ :sri.comprobantes/detAdicional)))
+  (s/every :sri.comprobantes/detAdicional))
 
 (s/def :sri.comprobantes.detalle/impuesto
   (s/keys :req-un [:sri.comprobantes.impuesto/codigo
@@ -162,7 +162,7 @@
   (s/keys :req-un [:sri.comprobantes.campoAdicional/nombre
                    :sri.comprobantes.campoAdicional/texto]))
 (s/def :sri.comprobantes/infoAdicional
-  (s/nilable (s/+ :sri.comprobantes/campoAdicional)))
+  (s/every :sri.comprobantes/campoAdicional))
 
 (s/def :sri.comprobantes/factura
   (s/keys :req-un [:sri.comprobantes/infoTributaria
