@@ -1,10 +1,13 @@
 (ns ^:no-doc com.gaumala.sri.xades4j
-  (:import java.io.File
+  (:import java.io.ByteArrayInputStream
+           java.io.File
+           java.io.FileInputStream
 
            java.security.KeyStore
            java.security.cert.X509Certificate
 
            java.util.Arrays
+           java.util.Date
            java.util.List
 
            javax.xml.transform.TransformerFactory
@@ -30,9 +33,26 @@
   [^X509Certificate certificate]
   (get (.getKeyUsage certificate) KEY_USAGE_INDEX_DIGITAL_SIGNATURE))
 
-(defn- load-keystore [stream pwd]
-  (let [keystore (KeyStore/getInstance "PKCS12")]
-    (.load keystore stream (char-array pwd))
+(defn load-keystore [input pwd]
+  (let [keystore (KeyStore/getInstance "PKCS12")
+        password-chars (.toCharArray pwd)]
+    (cond
+      (string? input)
+      (with-open [fis (FileInputStream. input)]
+        (.load keystore fis password-chars))
+
+      (bytes? input)
+      (with-open [bais (ByteArrayInputStream. input)]
+        (.load keystore bais password-chars))
+
+      (instance? java.io.InputStream input)
+      (do
+        (.load keystore input password-chars)
+        (.close input))
+
+      :else
+      (throw (IllegalArgumentException.
+              "Input keystore must be a file path (String), byte array, or InputStream")))
     keystore))
 
 (defn- find-digital-signature-alias [keystore]
@@ -74,8 +94,8 @@
       (.withDigestAlgorithmForDataObjectReferences ALGO_DIGEST_SHA_1)
       (.withDigestAlgorithmForReferenceProperties ALGO_DIGEST_SHA_1)))
 
-(defn new-signer-bes [stream pwd]
-  (let [keystore (load-keystore stream pwd)
+(defn new-signer-bes [in-keys pwd]
+  (let [keystore (load-keystore in-keys pwd)
         kdp (new-keying-data-provider keystore pwd)]
     (-> (XadesBesSigningProfile. kdp)
         (.withBasicSignatureOptions (basic-signature-options))
@@ -97,3 +117,23 @@
                        (SignedDataObjects.))]
     (.setIdAttribute elem "id" true)
     (.sign signer data-objs elem)))
+
+(defn get-certificate-info
+  [keystore]
+  (when-let [alias (find-digital-signature-alias keystore)]
+    (prn "got digital sig alias" alias)
+    (let [certificate (.getCertificate keystore alias)]
+      (when (instance? X509Certificate certificate)
+        (let [^X509Certificate cert certificate
+              now (Date.)
+              not-after (.getNotAfter cert)]
+          {:alias alias
+           :subject (.getSubjectDN cert)
+           :issuer (.getIssuerDN cert)
+           :serial-number (.getSerialNumber cert)
+           :valid-from (.getTime (.getNotBefore cert))
+           :valid-until (.getTime not-after)
+           :expired? (.after now not-after)
+           :days-until-expiry (when-not (.after now not-after)
+                                (quot (- (.getTime not-after) (.getTime now))
+                                      (* 1000 60 60 24)))})))))
