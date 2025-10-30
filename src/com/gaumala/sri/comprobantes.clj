@@ -79,7 +79,7 @@
                    :sri.comprobantes.impuesto/baseImponible
                    :sri.comprobantes.impuesto/valor]
           :opt-un [:sri.comprobantes.impuesto/descuentoAdicional]))
-(s/def :sri.comprobantes/totalConImpuestos (s/* :sri.comprobantes/totalImpuesto))
+(s/def :sri.comprobantes/totalConImpuestos (s/+ :sri.comprobantes/totalImpuesto))
 
 (s/def :sri.comprobantes/propina monetary-value?)
 (s/def :sri.comprobantes/importeTotal monetary-value?)
@@ -142,7 +142,7 @@
                    :sri.comprobantes.impuesto/baseImponible
                    :sri.comprobantes.impuesto/valor
                    :sri.comprobantes.impuesto/tarifa]))
-(s/def :sri.comprobantes.detalle/impuestos (s/* :sri.comprobantes.detalle/impuesto))
+(s/def :sri.comprobantes.detalle/impuestos (s/+ :sri.comprobantes.detalle/impuesto))
 
 (s/def :sri.comprobantes/detalle
   (s/keys :req-un [:sri.comprobantes.detalle/codigoPrincipal
@@ -221,9 +221,9 @@
         detalles-adicionales-tag (some->> (not-empty detallesAdicionales)
                                           (map gen-det-adicional)
                                           (sequence-tag :detallesAdicionales))
-        impuestos-tag {:tag :impuestos
-                       :attrs {}
-                       :content (map gen-impuesto impuestos)}]
+        impuestos-tag (some->> impuestos
+                               (map gen-impuesto)
+                               (sequence-tag :impuestos))]
     {:tag :detalle
      :attrs {}
      :content (filter some? [(simple-tag :codigoPrincipal)
