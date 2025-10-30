@@ -9,6 +9,7 @@
   | ---------|-------|
   | `:type`  | `:spec-validation`
   | `:data`  | El resultado de `clojure.spec.alpha/explain-data`
+  | `:explain` | El resultado de `clojure.spec.alpha/explain-str` (string con la explicación)
   | `:input` | `input`"
   {:doc/format :markdown}
   [spec input]
@@ -17,4 +18,5 @@
     (throw (ex-info (s/explain-str spec input)
                     {:type :spec-validation
                      :data (s/explain-data spec input)
+                     :explain (s/explain-str spec input)
                      :input input}))))
