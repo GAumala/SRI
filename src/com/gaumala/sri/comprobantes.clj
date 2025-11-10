@@ -24,6 +24,7 @@
                                                 identificacionComprador?
                                                 contribuyenteEspecial?
                                                 guiaRemision?
+                                                numDoc?
                                                 tarifa?]]
             [com.gaumala.utils.spec :refer [validate]]))
 
@@ -164,9 +165,38 @@
 (s/def :sri.comprobantes/infoAdicional
   (s/every :sri.comprobantes/campoAdicional))
 
+(s/def :sri.comprobantes/codDocModificado :sri.comprobantes/codDoc)
+(s/def :sri.comprobantes/numDocModificado numDoc?)
+(s/def :sri.comprobantes/fechaEmisionDocSustento :sri.comprobantes/fechaEmision)
+(s/def :sri.comprobantes/valorModificacion monetary-value?)
+(s/def :sri.comprobantes/motivo some-string-under-300?)
+
+(s/def :sri.comprobantes/infoNotaCredito
+  (s/keys :req-un [:sri.comprobantes/fechaEmision
+                   :sri.comprobantes/tipoIdentificacionComprador
+                   :sri.comprobantes/razonSocialComprador
+                   :sri.comprobantes/identificacionComprador
+                   :sri.comprobantes/codDocModificado
+                   :sri.comprobantes/numDocModificado
+                   :sri.comprobantes/fechaEmisionDocSustento
+                   :sri.comprobantes/totalSinImpuestos
+                   :sri.comprobantes/totalConImpuestos
+                   :sri.comprobantes/valorModificacion
+                   :sri.comprobantes/motivo]
+          :opt-un [:sri.comprobantes/dirEstablecimiento
+                   :sri.comprobantes/contribuyenteEspecial
+                   :sri.comprobantes/obligadoContabilidad
+                   :sri.comprobantes/moneda]))
+
 (s/def :sri.comprobantes/factura
   (s/keys :req-un [:sri.comprobantes/infoTributaria
                    :sri.comprobantes/infoFactura
+                   :sri.comprobantes/detalles]
+          :opt-un [:sri.comprobantes/infoAdicional]))
+
+(s/def :sri.comprobantes/notaCredito
+  (s/keys :req-un [:sri.comprobantes/infoTributaria
+                   :sri.comprobantes/infoNotaCredito
                    :sri.comprobantes/detalles]
           :opt-un [:sri.comprobantes/infoAdicional]))
 
@@ -289,6 +319,30 @@
                              (simple-tag :valorRetIva)
                              (simple-tag :valorRetRenta)])}))
 
+(defn- gen-info-nota-credito [params]
+  (let [simple-tag (simple-tag-hof params)
+        {:keys [totalConImpuestos]} params
+        total-con-impuestos-tag (some->> totalConImpuestos
+                                         (map gen-total-impuesto)
+                                         (sequence-tag :totalConImpuestos))]
+    {:tag :infoNotaCredito
+     :attrs {}
+     :content (filter some? [(simple-tag :fechaEmision)
+                             (simple-tag :dirEstablecimiento)
+                             (simple-tag :tipoIdentificacionComprador)
+                             (simple-tag :razonSocialComprador)
+                             (simple-tag :identificacionComprador)
+                             (simple-tag :contribuyenteEspecial)
+                             (simple-tag :obligadoContabilidad)
+                             (simple-tag :codDocModificado)
+                             (simple-tag :numDocModificado)
+                             (simple-tag :fechaEmisionDocSustento)
+                             (simple-tag :totalSinImpuestos)
+                             total-con-impuestos-tag
+                             (simple-tag :valorModificacion)
+                             (simple-tag :moneda)
+                             (simple-tag :motivo)])}))
+
 (defn- complete-info-tributaria [params fechaEmision codigo]
   (let [tipoEmision (or (:tipoEmision params) "1") ;offline solo tiene tipo 1
         claveAcceso (or (:claveAcceso params)
@@ -318,5 +372,27 @@
       :attrs {:id "comprobante" :version "1.0.0"}
       :content (filter some? [info-tributaria-tag
                               info-factura-tag
+                              detalles-tag
+                              info-adicional-tag])})))
+
+(defn gen-nota-credito [params codigo]
+  {:pre [(validate :sri.comprobantes/notaCredito params)]}
+  (let [{:keys [infoNotaCredito detalles infoAdicional]} params
+        infoTributaria (complete-info-tributaria (:infoTributaria params)
+                                                 (:fechaEmision infoNotaCredito)
+                                                 codigo)
+        info-tributaria-tag (gen-info-tributaria infoTributaria)
+        info-nota-credito-tag (gen-info-nota-credito infoNotaCredito)
+        detalles-tag (some->> detalles
+                              (map gen-detalle)
+                              (sequence-tag :detalles))
+        info-adicional-tag (some->> (not-empty infoAdicional)
+                                    (map gen-campo-adicional)
+                                    (sequence-tag :infoAdicional))]
+    (xml/map->element
+     {:tag :notaCredito
+      :attrs {:id "comprobante" :version "1.0.0"}
+      :content (filter some? [info-tributaria-tag
+                              info-nota-credito-tag
                               detalles-tag
                               info-adicional-tag])})))

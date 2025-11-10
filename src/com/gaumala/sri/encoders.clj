@@ -1,7 +1,8 @@
 (ns com.gaumala.sri.encoders
   "Funciones para codificar información a strings XML que se pueden
   envíar a los web services del SRI."
-  (:require [com.gaumala.sri.comprobantes :refer [gen-factura]]
+  (:require [com.gaumala.sri.comprobantes :refer [gen-factura
+                                                  gen-nota-credito]]
             [com.gaumala.soap :as soap]
             [com.gaumala.utils.base64 :as base64]
             [com.gaumala.xml :as xml]))
@@ -71,3 +72,17 @@
    (->> (gen-factura params codigo)
         (xml/emit)))
   ([params] (factura params nil)))
+
+(defn nota-credito
+  "Codifica un mapa `params` con datos de nota de crédito a un string XML. Si
+  incluyes el `codigo` numérico de 8 dígitos como segundo parámetro, se
+  generará la clave de acceso en el XML resultante a menos que el mapa la
+  incluya explícitamente.
+
+  El mapa `params` debe conformarse al spec `:sri.comprobantes/notaCredito`,
+  de lo contrario se arroja un `ExceptionInfo` a través de [[validate]]."
+  {:doc/format :markdown}
+  ([params codigo]
+   (->> (gen-nota-credito params codigo)
+        (xml/emit)))
+  ([params] (nota-credito params nil)))

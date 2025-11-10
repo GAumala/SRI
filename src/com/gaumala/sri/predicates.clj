@@ -83,15 +83,20 @@
   {:doc/format :markdown}
   [x] (and (string? x) (re-matches guia-remision-regex x)))
 
+(def num-doc-regex #"^[0-9]{3}-[0-9]{3}-[0-9]{9}$")
+(defn numDoc?
+  "Predicado para campos con el formato `001-002-000012345`."
+  {:doc/format :markdown}
+  [x] (and (string? x) (re-matches num-doc-regex x)))
+
 (defn- parse-fecha [x] (try
                          (doall (map #(Integer/parseInt %) (str/split x #"/")))
                          (catch Exception e nil)))
 
-(defn fechaEmision?
-  "Predicado para el campo `fechaEmision`.
-  Acepta strings con fechas en formato dd/mm/yyyy"
+(defn fechaEnFormato?
+  "Predicado genérico para fechas dd/mm/yyyy con un año mínimo."
   {:doc/format :markdown}
-  [x]
+  [x min-year]
   (and (string? x)
        (= 10 (count x))
        (if-let [[dd mm yyyy] (parse-fecha x)]
@@ -100,8 +105,15 @@
            (> dd 31) false
            (< mm 1) false
            (> mm 12) false
-           (< yyyy 2012) false
+           (< yyyy min-year) false
            :else true) false)))
+
+(defn fechaEmision?
+  "Predicado para el campo `fechaEmision`.
+  Acepta strings con fechas en formato dd/mm/yyyy desde el año 2000."
+  {:doc/format :markdown}
+  [x]
+  (fechaEnFormato? x 2000))
 
 (defn tarifa?
   "Predicado para el campo `tarifa`.
