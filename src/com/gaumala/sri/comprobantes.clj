@@ -121,6 +121,7 @@
                    :sri.comprobantes/valorRetRenta]))
 
 (s/def :sri.comprobantes.detalle/codigoPrincipal some-string-under-25?)
+(s/def :sri.comprobantes.detalle/codigoInterno some-string-under-25?)
 (s/def :sri.comprobantes.detalle/codigoAuxiliar  some-string-under-25?)
 (s/def :sri.comprobantes.detalle/descripcion  some-string-under-300?)
 (s/def :sri.comprobantes.detalle/cantidad  monetary-value?)
@@ -156,6 +157,19 @@
           :opt-un [:sri.comprobantes.detalle/codigoAuxiliar
                    :sri.comprobantes/detallesAdicionales]))
 (s/def :sri.comprobantes/detalles (s/+ :sri.comprobantes/detalle))
+
+(s/def :sri.comprobantes.modificacion/detalle
+  (s/keys :req-un [:sri.comprobantes.detalle/descripcion
+                   :sri.comprobantes.detalle/cantidad
+                   :sri.comprobantes.detalle/precioUnitario
+                   :sri.comprobantes.detalle/descuento
+                   :sri.comprobantes.detalle/precioTotalSinImpuesto
+                   :sri.comprobantes.detalle/impuestos]
+          :opt-un [:sri.comprobantes.detalle/codigoInterno
+                   :sri.comprobantes.detalle/codigoAuxiliar
+                   :sri.comprobantes/detallesAdicionales]))
+(s/def :sri.comprobantes.modificacion/detalles
+  (s/+ :sri.comprobantes.modificacion/detalle))
 
 (s/def :sri.comprobantes.campoAdicional/nombre  some-string-under-300?)
 (s/def :sri.comprobantes.campoAdicional/texto  some-string-under-300?)
@@ -197,7 +211,7 @@
 (s/def :sri.comprobantes/notaCredito
   (s/keys :req-un [:sri.comprobantes/infoTributaria
                    :sri.comprobantes/infoNotaCredito
-                   :sri.comprobantes/detalles]
+                   :sri.comprobantes.modificacion/detalles]
           :opt-un [:sri.comprobantes/infoAdicional]))
 
 (defn- simple-tag-hof [params]
@@ -257,6 +271,27 @@
     {:tag :detalle
      :attrs {}
      :content (filter some? [(simple-tag :codigoPrincipal)
+                             (simple-tag :codigoAuxiliar)
+                             (simple-tag :descripcion)
+                             (simple-tag :cantidad)
+                             (simple-tag :precioUnitario)
+                             (simple-tag :descuento)
+                             (simple-tag :precioTotalSinImpuesto)
+                             detalles-adicionales-tag
+                             impuestos-tag])}))
+
+(defn- gen-detalle-modificacion [params]
+  (let [simple-tag (simple-tag-hof params)
+        {:keys [detallesAdicionales impuestos]} params
+        detalles-adicionales-tag (some->> (not-empty detallesAdicionales)
+                                          (map gen-det-adicional)
+                                          (sequence-tag :detallesAdicionales))
+        impuestos-tag (some->> impuestos
+                               (map gen-impuesto)
+                               (sequence-tag :impuestos))]
+    {:tag :detalle
+     :attrs {}
+     :content (filter some? [(simple-tag :codigoInterno)
                              (simple-tag :codigoAuxiliar)
                              (simple-tag :descripcion)
                              (simple-tag :cantidad)
@@ -384,14 +419,14 @@
         info-tributaria-tag (gen-info-tributaria infoTributaria)
         info-nota-credito-tag (gen-info-nota-credito infoNotaCredito)
         detalles-tag (some->> detalles
-                              (map gen-detalle)
+                              (map gen-detalle-modificacion)
                               (sequence-tag :detalles))
         info-adicional-tag (some->> (not-empty infoAdicional)
                                     (map gen-campo-adicional)
                                     (sequence-tag :infoAdicional))]
     (xml/map->element
      {:tag :notaCredito
-      :attrs {:id "comprobante" :version "1.1.0"}
+      :attrs {:id "comprobante" :version "1.0.0"}
       :content (filter some? [info-tributaria-tag
                               info-nota-credito-tag
                               detalles-tag

@@ -44,7 +44,7 @@
                                    :valorModificacion "346920.00"
                                    :moneda "DOLAR"
                                    :motivo "DEVOLUCIÓN"}
-                 :detalles [{:codigoPrincipal "125BJC-01"
+                 :detalles [{:codigoInterno "125BJC-01"
                              :codigoAuxiliar "1234D56789-A"
                              :descripcion "CAMIONETA 4X4 DIESEL 3.7"
                              :cantidad "10.00"
