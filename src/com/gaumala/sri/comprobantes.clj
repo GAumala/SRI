@@ -180,12 +180,12 @@
                    :sri.comprobantes/numDocModificado
                    :sri.comprobantes/fechaEmisionDocSustento
                    :sri.comprobantes/totalSinImpuestos
-                   :sri.comprobantes/totalConImpuestos
                    :sri.comprobantes/valorModificacion
                    :sri.comprobantes/motivo]
           :opt-un [:sri.comprobantes/dirEstablecimiento
                    :sri.comprobantes/contribuyenteEspecial
                    :sri.comprobantes/obligadoContabilidad
+                   :sri.comprobantes/totalConImpuestos
                    :sri.comprobantes/moneda]))
 
 (s/def :sri.comprobantes/factura
@@ -338,9 +338,9 @@
                              (simple-tag :numDocModificado)
                              (simple-tag :fechaEmisionDocSustento)
                              (simple-tag :totalSinImpuestos)
-                             total-con-impuestos-tag
                              (simple-tag :valorModificacion)
                              (simple-tag :moneda)
+                             total-con-impuestos-tag
                              (simple-tag :motivo)])}))
 
 (defn- complete-info-tributaria [params fechaEmision codigo]
@@ -391,7 +391,7 @@
                                     (sequence-tag :infoAdicional))]
     (xml/map->element
      {:tag :notaCredito
-      :attrs {:id "comprobante" :version "1.0.0"}
+      :attrs {:id "comprobante" :version "1.1.0"}
       :content (filter some? [info-tributaria-tag
                               info-nota-credito-tag
                               detalles-tag
