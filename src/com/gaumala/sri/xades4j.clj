@@ -121,7 +121,6 @@
 (defn get-certificate-info
   [keystore]
   (when-let [alias (find-digital-signature-alias keystore)]
-    (prn "got digital sig alias" alias)
     (let [certificate (.getCertificate keystore alias)]
       (when (instance? X509Certificate certificate)
         (let [^X509Certificate cert certificate
