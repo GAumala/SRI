@@ -2,7 +2,8 @@
   "Funciones para manipular XML usando [data.xml](
   https://github.com/clojure/data.xml)"
   {:doc/format :markdown}
-  (:require [clojure.data.xml :as xml])
+  (:require [clojure.data.xml :as xml]
+            [com.gaumala.xml-doc :as xml-doc])
   (:import java.io.InputStream
            javax.xml.parsers.SAXParser
            org.xml.sax.helpers.DefaultHandler))
@@ -60,8 +61,8 @@
                    (map map->element (:content elem)))))
 
 (defn emit
-  "Convierte un record element a un string XML. Puedes usar
- [[map->element]] para generar el record.
+  "Convierte un record element a un string XML formateado para
+  ser legible. Puedes usar [[map->element]] para generar el record.
  ```clojure
  (-> {:tag :greeting :attrs {:lang \"EN\"} :content [\"hello\"]}
      (map->element)
@@ -70,4 +71,6 @@
  ;;    <greeting lang=\"EN\">hello</greeting>
  ```"
   {:doc/format :markdown}
-  [elem] (xml/emit-str elem))
+  [elem] (-> elem
+             xml/emit-str
+             xml-doc/pretty-print))

@@ -1,8 +1,8 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-	<soap:Body>
-		<validarComprobante xmlns="http://ec.gob.sri.ws.recepcion">
-			<xml xmlns="">PGZvbz48YmFyLz48L2Zvbz4=</xml>
-		</validarComprobante>
-	</soap:Body>
+  <soap:Body>
+    <validarComprobante xmlns="http://ec.gob.sri.ws.recepcion">
+      <xml xmlns="">PGZvbz48YmFyLz48L2Zvbz4=</xml>
+    </validarComprobante>
+  </soap:Body>
 </soap:Envelope>

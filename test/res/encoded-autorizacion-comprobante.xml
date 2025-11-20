@@ -1,8 +1,8 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-	<soap:Body>
-		<autorizacionComprobante xmlns="http://ec.gob.sri.ws.autorizacion">
-			<claveAccesoComprobante xmlns="">2110201201179214673900110020010000000011234567818</claveAccesoComprobante>
-		</autorizacionComprobante>
-	</soap:Body>
+  <soap:Body>
+    <autorizacionComprobante xmlns="http://ec.gob.sri.ws.autorizacion">
+      <claveAccesoComprobante xmlns="">2110201201179214673900110020010000000011234567818</claveAccesoComprobante>
+    </autorizacionComprobante>
+  </soap:Body>
 </soap:Envelope>

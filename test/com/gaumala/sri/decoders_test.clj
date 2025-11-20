@@ -38,7 +38,6 @@
                                     :fechaAutorizacion "2024-10-07T13:48:46-05:00"
                                     :ambiente "PRUEBAS"
                                     :comprobante "<?xml version=\\\"1.0\\\" encoding=\\\"UTF-8\\\" standalone=\\\"no\\\"?>"
-
                                     :mensajes [{:identificador "56"
                                                 :mensaje "ERROR ESTABLECIMIENTO CERRADO"
                                                 :informacionAdicional "El establecimiento 002 está cerrado"

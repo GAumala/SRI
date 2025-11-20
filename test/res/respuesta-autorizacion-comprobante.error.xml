@@ -9,8 +9,7 @@
             <estado>NO AUTORIZADO</estado>
             <fechaAutorizacion>2024-10-07T13:48:46-05:00</fechaAutorizacion>
             <ambiente>PRUEBAS</ambiente>
-            <comprobante>&lt;?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?&gt;
-            </comprobante>
+            <comprobante>&lt;?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?&gt;</comprobante>
             <mensajes>
               <mensaje>
                 <identificador>56</identificador>

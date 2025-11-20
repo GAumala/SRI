@@ -15,8 +15,7 @@
   (let [factory (DocumentBuilderFactory/newInstance)
         builder (.newDocumentBuilder factory)
         is (InputSource. (StringReader. input))]
-    (try (.parse builder is)
-         (catch Exception e (.printStacktrace e)))))
+    (.parse builder is)))
 
 (defn document->string [^org.w3c.dom.Document input]
   (let [sw (StringWriter.)
@@ -26,8 +25,15 @@
     (.setOutputProperty transformer OutputKeys/METHOD "xml")
     (.setOutputProperty transformer OutputKeys/INDENT "yes")
     (.setOutputProperty transformer OutputKeys/ENCODING "UTF-8")
+    (.setOutputProperty transformer "{http://xml.apache.org/xslt}indent-amount" "2")
     (.transform transformer (DOMSource. input) (StreamResult. sw))
     (.toString sw)))
+
+(defn pretty-print
+  [xml-string]
+  (-> xml-string
+      string->document
+      document->string))
 
 (defn document->raw-string [^org.w3c.dom.Document input]
   (let [sw (StringWriter.)
