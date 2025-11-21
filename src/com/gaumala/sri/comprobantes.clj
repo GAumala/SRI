@@ -404,7 +404,7 @@
                                     (sequence-tag :infoAdicional))]
     (xml/map->element
      {:tag :factura
-      :attrs {:id "comprobante" :version "1.0.0"}
+      :attrs {:id "comprobante" :version "1.1.0"}
       :content (filter some? [info-tributaria-tag
                               info-factura-tag
                               detalles-tag
@@ -426,7 +426,7 @@
                                     (sequence-tag :infoAdicional))]
     (xml/map->element
      {:tag :notaCredito
-      :attrs {:id "comprobante" :version "1.0.0"}
+      :attrs {:id "comprobante" :version "1.1.0"}
       :content (filter some? [info-tributaria-tag
                               info-nota-credito-tag
                               detalles-tag
